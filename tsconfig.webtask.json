@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.paths.json",
+  "compilerOptions": {
+    "target": "es2017",
+    "allowJs": true,
+    "outDir": "build",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  },
+  "include": ["src/webtasks"]
+}

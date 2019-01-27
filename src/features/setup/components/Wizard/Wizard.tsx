@@ -2,7 +2,9 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { RouteComponentProps } from '@reach/router';
 import { Header, Segment, Step } from 'semantic-ui-react';
+
 import './Wizard.scss';
+import { AssetsSetup } from './components/AssetsSetup';
 
 export const Wizard: React.FunctionComponent<RouteComponentProps> = () => {
   return (
@@ -10,13 +12,15 @@ export const Wizard: React.FunctionComponent<RouteComponentProps> = () => {
       <Segment attached>
         <Header icon="cogs" content="MoneyTracker Setup" />
       </Segment>
-      <Step.Group fluid attached size="tiny">
-        <Step title="Currency" icon="yen sign" active />
+      <Step.Group fluid attached>
+        <Step title="Assets" icon="money bill alternate outline" active />
         <Step title="Categories" icon="tasks" />
-        <Step title="Groups" icon="folder open outilne" />
+        <Step title="Groups" icon="folder open outline" />
         <Step title="Accounts" icon="credit card outline" />
       </Step.Group>
-      <Segment attached>wizard steps</Segment>
+      <Segment attached>
+        <AssetsSetup />
+      </Segment>
     </Segment.Group>
   );
 };

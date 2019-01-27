@@ -9,9 +9,17 @@ export class SettingsDB {
           isSetupComplete: false,
           money: {
             exchangeRate: { USD: 1 },
-            baseCurrency: 'USD',
-            currencies: [],
-            stocks: []
+            baseCurrency: 'currency.USD',
+            assets: [
+              {
+                id: 'currency.USD',
+                kind: 'currency',
+                code: 'USD',
+                name: 'US Dollar',
+                description: 'Currency',
+                exp: 2
+              }
+            ]
           },
           groups: [{ id: 'G0001', name: 'Cash', order: 0 }],
           categories: []

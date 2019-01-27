@@ -47,6 +47,7 @@
     "typescript": "^3.2.2"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.34",
     "eslint-plugin-react": "^7.7.0",
     "mobx-react-devtools": "^6.0.3",
     "react-test-renderer": "^16.6.1",
@@ -60,6 +61,7 @@
     "pretty": "prettier --write 'src/**/*.js'",
     "start": "craco start",
     "build": "craco build",
+    "build-webtask": "tsc --project tsconfig.webtask.json",
     "test": "craco test --env=jsdom",
     "deploy": "npm run build && cd build && mv index.html 200.html && surge ./ app.moneytracker.cc && surge ./ demo.moneytracker.cc"
   },
