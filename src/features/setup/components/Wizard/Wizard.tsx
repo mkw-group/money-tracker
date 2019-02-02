@@ -6,54 +6,77 @@ import { StoreContext } from 'RootStore';
 import { WizardStep, WizardUiStore } from 'features/setup';
 import { AssetsSetup } from './components/AssetsSetup';
 import { GroupsSetup } from './components/GroupsSetup';
-import './Wizard.scss';
+import { AccountsSetup } from './components/AccountsSetup';
 import 'styles/dnd.scss';
+import './Wizard.scss';
+
+interface StepT {
+  key: WizardStep;
+  title: string;
+  icon: string;
+}
+
+const steps: StepT[] = [
+  {
+    key: 'groups',
+    title: 'Groups',
+    icon: 'folder open outline'
+  },
+  {
+    key: 'accounts',
+    title: 'Accounts',
+    icon: 'credit card outline'
+  },
+  {
+    key: 'categories',
+    title: 'Categories',
+    icon: 'tasks'
+  },
+  {
+    key: 'currency',
+    title: 'Currency',
+    icon: 'yen sign'
+  }
+];
 
 const StepComponent: Record<WizardStep, React.ReactNode> = {
   groups: <GroupsSetup />,
-  accounts: <div>accounts</div>,
+  accounts: <AccountsSetup />,
   categories: <div>categories</div>,
   currency: <AssetsSetup />
 };
 
 interface Props {
-  store: WizardUiStore;
+  ui: WizardUiStore;
 }
 
 @observer
 class WizardObserver extends React.Component<Props> {
   render() {
-    const { activeStep } = this.props.store;
+    const { ui } = this.props;
 
     return (
       <Segment.Group className="Wizard u-container">
-        <Segment attached>
+        <Segment attached style={{ padding: '1.5em' }}>
           <Header icon="cogs" content="MoneyTracker Setup" />
         </Segment>
-        <Step.Group size="tiny" fluid attached>
-          <Step
-            title="Groups"
-            icon="folder open outline"
-            active={activeStep === 'groups'}
-          />
-          <Step
-            title="Accounts"
-            icon="credit card outline"
-            active={activeStep === 'accounts'}
-          />
-          <Step
-            title="Categories"
-            icon="tasks"
-            active={activeStep === 'categories'}
-          />
-          <Step
-            title="Currency"
-            icon="yen sign"
-            active={activeStep === 'currency'}
-            onClick={() => this.props.store.changeActiveStep('currency')}
-          />
+        <Step.Group size="small" fluid attached>
+          {steps.map(({ key, title, icon }) => (
+            <Step
+              key={key}
+              icon={icon}
+              title={title}
+              active={ui.activeStep === key}
+              completed={ui.completedSteps[key]}
+              onClick={
+                ui.completedSteps[key] && ui.activeStep !== key
+                  ? () => ui.changeActiveStep(key)
+                  : undefined
+              }
+            />
+          ))}
         </Step.Group>
-        <Segment attached>{StepComponent[activeStep]}</Segment>
+        <Segment attached>{StepComponent[ui.activeStep]}</Segment>
       </Segment.Group>
     );
   }
@@ -61,6 +84,6 @@ class WizardObserver extends React.Component<Props> {
 
 export const Wizard: React.FunctionComponent<RouteComponentProps> = () => (
   <StoreContext.Consumer>
-    {({ ui }) => <WizardObserver store={ui.wizard} />}
+    {({ ui }) => <WizardObserver ui={ui.wizard} />}
   </StoreContext.Consumer>
 );

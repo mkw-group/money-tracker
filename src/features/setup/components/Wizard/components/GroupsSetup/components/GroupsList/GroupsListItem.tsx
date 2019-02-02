@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import {
@@ -8,6 +8,7 @@ import {
 } from 'react-beautiful-dnd';
 import { Header, Button } from 'semantic-ui-react';
 import { GroupSettingsStore, AccountGroupT } from 'features/settings';
+import { GroupEditForm } from './GroupEditForm';
 
 interface GroupsListItemObserverProps {
   provided: DraggableProvided;
@@ -16,37 +17,64 @@ interface GroupsListItemObserverProps {
   group: AccountGroupT;
 }
 
-const GroupsListItemObserver = observer(
-  ({ provided, snapshot, store, group }: GroupsListItemObserverProps) => (
-    <div
-      className={cs('DragDropList-item', snapshot.isDragging && 'is-dragging')}
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-    >
-      <div className="DragDropList-item-button" style={{ paddingRight: '1em' }}>
-        <Button
-          icon="pencil"
-          size="tiny"
-          onClick={() => console.log(`edit ${group.id}`)}
-          basic
-          circular
-        />
+@observer
+class GroupsListItemObserver extends Component<GroupsListItemObserverProps> {
+  handleEditClick = () => {
+    const { store, group } = this.props;
+
+    if (store.ui.editGroupId !== group.id) {
+      store.ui.openEditForm(group);
+    } else {
+      store.saveGroup(group);
+    }
+  };
+
+  render() {
+    const { provided, snapshot, store, group } = this.props;
+    const isEdit = store.ui.editGroupId === group.id;
+
+    return (
+      <div
+        className={cs(
+          'DragDropList-item',
+          snapshot.isDragging && 'is-dragging'
+        )}
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+        <div
+          className="DragDropList-item-button"
+          style={{ paddingRight: '1em' }}
+        >
+          <Button
+            size="tiny"
+            icon={isEdit ? 'check' : 'pencil'}
+            onClick={this.handleEditClick}
+            circular
+            basic
+          />
+        </div>
+        <div className="DragDropList-item-label">
+          {isEdit ? (
+            <GroupEditForm store={store} group={group} />
+          ) : (
+            <Header>{group.name}</Header>
+          )}
+        </div>
+        <div className="DragDropList-item-button">
+          <Button
+            icon="remove"
+            size="tiny"
+            disabled={store.groups.length === 1}
+            onClick={() => store.remove(group)}
+            circular
+          />
+        </div>
       </div>
-      <div className="DragDropList-item-label">
-        <Header>{group.name}</Header>
-      </div>
-      <div className="DragDropList-item-button">
-        <Button
-          icon="trash outline"
-          size="tiny"
-          onClick={() => store.remove(group)}
-          circular
-        />
-      </div>
-    </div>
-  )
-);
+    );
+  }
+}
 
 interface Props {
   store: GroupSettingsStore;
@@ -54,7 +82,7 @@ interface Props {
   index: number;
 }
 
-export class GroupsListItem extends React.Component<Props> {
+export class GroupsListItem extends Component<Props> {
   render() {
     const { store, group, index } = this.props;
 

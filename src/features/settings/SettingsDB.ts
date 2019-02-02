@@ -8,8 +8,7 @@ const defaultAccountGroups: AccountGroupT[] = [
   { id: `G${timestamp++}`, name: 'Cash' },
   { id: `G${timestamp++}`, name: 'Bank Account' },
   { id: `G${timestamp++}`, name: 'Credit' },
-  { id: `G${timestamp++}`, name: 'Deposit' },
-  { id: `G${timestamp++}`, name: 'Asset' }
+  { id: `G${timestamp++}`, name: 'Deposit' }
 ];
 
 const defaultSettings: SettingsJsonT = {
