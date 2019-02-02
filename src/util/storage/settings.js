@@ -30,39 +30,39 @@ async function save(settings) {
   if (remoteSettingsDB()) {
     await remoteSettingsDB()
       .get('settings')
-      .then(remote => remote, err => defaultSettings)
-      .then(doc => remoteSettingsDB().put({ ...doc, ...settings }))
-      .catch(error => {
+      .then((remote) => remote, (err) => defaultSettings)
+      .then((doc) => remoteSettingsDB().put({ ...doc, ...settings }))
+      .catch((error) => {
         if (error.status !== 403) throw error;
       });
   }
 
   return settingsDB()
     .get('settings')
-    .then(local => local, err => defaultSettings)
-    .then(doc => settingsDB().put({ ...doc, ...settings }));
+    .then((local) => local, (err) => defaultSettings)
+    .then((doc) => settingsDB().put({ ...doc, ...settings }));
 }
 
 function saveLocal(settings) {
   return settingsDB()
     .get('_local/settings')
-    .then(doc => doc, err => defaultLocalSettings)
-    .then(doc => settingsDB().put({ ...doc, ...settings }));
+    .then((doc) => doc, (err) => defaultLocalSettings)
+    .then((doc) => settingsDB().put({ ...doc, ...settings }));
 }
 
 function load() {
   return settingsDB()
     .get('_local/settings')
-    .then(local => local, err => defaultLocalSettings)
-    .then(local => mergeLocalWithSyncedSettings(local));
+    .then((local) => local, (err) => defaultLocalSettings)
+    .then((local) => mergeLocalWithSyncedSettings(local));
 }
 
 async function mergeLocalWithSyncedSettings(local) {
   return settingsDB()
     .get('settings')
-    .then(settings => settings, err => defaultSettings)
-    .then(settings => syncSettings(settings))
-    .then(settings => ({ ...settings, ...local }));
+    .then((settings) => settings, (err) => defaultSettings)
+    .then((settings) => syncSettings(settings))
+    .then((settings) => ({ ...settings, ...local }));
 }
 
 async function syncSettings(settings) {
@@ -75,7 +75,7 @@ async function syncSettings(settings) {
       settings.currency.base,
       settings.currency.secondary,
       remote.currency.secondary
-    ).filter(code => code !== base);
+    ).filter((code) => code !== base);
 
     const synced = {
       currency: { base, secondary },

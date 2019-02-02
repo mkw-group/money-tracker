@@ -1,8 +1,9 @@
-import { observable, observe, action, computed, Lambda } from 'mobx';
-import { AssetId, AssetT } from 'features/money';
-import { SettingsDB } from './SettingsDB';
 import { SyntheticEvent } from 'react';
 import { CheckboxProps } from 'semantic-ui-react';
+import { observable, observe, action, computed, Lambda } from 'mobx';
+import { reorder } from 'util/dnd';
+import { AssetId, AssetT } from 'features/money';
+import { SettingsDB } from './SettingsDB';
 
 export interface MoneySettingsJsonT {
   exchangeRate: Record<AssetId, number>;
@@ -53,9 +54,12 @@ export class MoneySettingsStore {
   }
 
   @action removeAsset(asset: AssetT) {
-    console.log('remove', asset);
     // @ts-ignore
     this.assets.remove(asset);
+  }
+
+  @action swapAssets(startIndex: number, endIndex: number) {
+    this.assets = reorder(this.assets, startIndex, endIndex);
   }
 
   discard() {

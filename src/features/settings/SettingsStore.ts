@@ -5,6 +5,7 @@ import { CategorySettingsStore, CategoryT } from './CategorySettingsStore';
 import { SettingsDB } from './SettingsDB';
 
 export interface SettingsJsonT {
+  _id: string;
   isSetupComplete: boolean;
   money: MoneySettingsJsonT;
   groups: AccountGroupT[];

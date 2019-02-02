@@ -1,2 +1,3 @@
-export { SettingsStore } from './SettingsStore';
-export { MoneySettingsStore } from './MoneySettingsStore';
+export * from './SettingsStore';
+export * from './MoneySettingsStore';
+export * from './GroupSettingsStore';

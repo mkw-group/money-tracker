@@ -1,26 +1,34 @@
-import { observable, action, Lambda, IObservableArray } from 'mobx';
+import { observable, action, Lambda, IObservableArray, remove } from 'mobx';
+import { reorder } from 'util/dnd';
 import { SettingsDB } from './SettingsDB';
 
 export interface AccountGroupT {
   id: string;
   name: string;
-  order: number;
 }
 
 export class GroupSettingsStore {
-  groups: IObservableArray<AccountGroupT>;
+  @observable groups: IObservableArray<AccountGroupT>;
   private onChangeDisposer: Lambda;
 
   constructor(groups: AccountGroupT[]) {
     this.groups = observable(groups);
 
-    this.onChangeDisposer = this.groups.observe(change => {
-      console.log('group change', change);
+    this.onChangeDisposer = this.groups.observe(({ object }) => {
+      SettingsDB.persistGroupsChange(object);
     });
   }
 
-  @action addGroup(group: AccountGroupT) {
+  @action add(group: AccountGroupT) {
     this.groups.push(group);
+  }
+
+  @action move(startIndex: number, endIndex: number) {
+    this.groups.replace(reorder(this.groups, startIndex, endIndex));
+  }
+
+  @action remove(group: AccountGroupT) {
+    this.groups.remove(group);
   }
 
   map<U>(

@@ -15,7 +15,7 @@ interface Props {
  */
 export const AppRoot = observer(({ store }: Props) => (
   <ErrorBoundary>
-    {/* <DevTools /> */}
+    <DevTools />
     {store.case({
       pending: () => <Loader active />,
       rejected: (error: Error) => (

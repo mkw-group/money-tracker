@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Header, Form, Checkbox, Table, Button } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
 import { AppShellStore } from 'features/app-shell';
 import { AssetFinderDropdown } from './components/AssetFinderDropdown';
@@ -23,8 +23,8 @@ class AssetsSetupObserver extends React.Component<Props> {
           ETFs)
         </p>
         <p>
-          Base currency will be used to display your net worth as well as for
-          reports.
+          Choose one base currency, which will be used to display your net worth
+          as well as in reports.
         </p>
         <Form>
           <Form.Field>
