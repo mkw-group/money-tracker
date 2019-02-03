@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import {
   AssetKind,
-  AssetT,
+  IAsset,
   AssetSearchResponseItemT,
   AssetSearchResponseT
 } from 'features/money';
@@ -17,7 +17,7 @@ const descriptionMap: Record<
     `${securityType}, ${securityRegion} (${securityCurrency})`
 };
 
-export async function findAssets(query: string = ''): Promise<AssetT[]> {
+export async function findAssets(query: string = ''): Promise<IAsset[]> {
   try {
     const res = await fetch(`${endpointUrl}?q=${encodeURIComponent(query)}`);
     const body: AssetSearchResponseT = await res.json();

@@ -1,7 +1,8 @@
-import { observable } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { StorageCredentials } from 'features/storage';
 
 export enum SessionMode {
+  Unknown,
   Guest,
   Demo,
   Live
@@ -24,18 +25,22 @@ export class SessionStore {
     this.credentials = credentials;
   }
 
-  static init(): SessionStore | undefined {
+  static init(): SessionStore {
     const data = localStorage.getItem('userInfo');
     if (data) {
       const session: SessionT = JSON.parse(data);
 
       return new SessionStore(session);
+    } else {
+      return new SessionStore({ mode: SessionMode.Unknown });
     }
-
-    return;
   }
 
-  static initGuest(): SessionStore {
-    return new SessionStore({ mode: SessionMode.Guest });
+  @action.bound switchToGuest() {
+    this.mode = SessionMode.Guest;
+  }
+
+  @computed get isUnknown(): boolean {
+    return this.mode === SessionMode.Unknown;
   }
 }

@@ -2,19 +2,18 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Router, navigate } from '@reach/router';
 import { StoreContext } from 'RootStore';
-import { AppShellStore } from 'features/app-shell';
-import { Setup, Wizard } from 'features/setup';
-import { SessionPrompt, SignIn } from 'features/session';
+import { SettingsStore, SetupRouter, Wizard } from 'features/settings';
+import { SessionStore, SessionPrompt, SignIn } from 'features/session';
 import { Dashboard } from 'features/dashboard';
 import './AppShell.scss';
 
 interface Props {
-  store: AppShellStore;
+  settings: SettingsStore;
+  session: SessionStore;
 }
 
-const AppShellObserver = observer(({ store }: Props) => {
-  const { session, settings } = store;
-  // if (!session && !settings.isSetupComplete) {
+const AppShellObserver = observer(({ session, settings }: Props) => {
+  // if (session.isUnknown && !settings.isSetupComplete) {
   //   navigate('/setup');
   // } else if (!settings.isSetupComplete) {
   //   navigate('/setup/wizard');
@@ -22,11 +21,11 @@ const AppShellObserver = observer(({ store }: Props) => {
 
   return (
     <Router>
-      <Setup path="/setup">
+      <SetupRouter path="/setup">
         <SessionPrompt path="/" />
         <SignIn path="signin" />
         <Wizard path="wizard" />
-      </Setup>
+      </SetupRouter>
       <Dashboard path="/" />
     </Router>
   );
@@ -34,6 +33,8 @@ const AppShellObserver = observer(({ store }: Props) => {
 
 export const AppShell = () => (
   <StoreContext.Consumer>
-    {({ appShell }) => <AppShellObserver store={appShell} />}
+    {({ entity }) => (
+      <AppShellObserver session={entity.session} settings={entity.settings} />
+    )}
   </StoreContext.Consumer>
 );

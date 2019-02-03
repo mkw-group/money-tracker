@@ -16,7 +16,7 @@ export interface AssetSearchResponseItemT {
   securityCurrency?: string;
 }
 
-export interface AssetT extends AssetSearchResponseItemT {
+export interface IAsset extends AssetSearchResponseItemT {
   id: AssetId;
   description: string;
 }

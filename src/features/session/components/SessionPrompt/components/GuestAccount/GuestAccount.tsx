@@ -4,7 +4,7 @@ import { StoreContext } from 'RootStore';
 
 export const GuestAccount = () => (
   <StoreContext.Consumer>
-    {({ appShell }) => (
+    {({ entity }) => (
       <React.Fragment>
         <Header icon>
           <Icon name="user secret" />
@@ -12,7 +12,7 @@ export const GuestAccount = () => (
         </Header>
         <Container>
           <p>Data stored only on current device without backup</p>
-          <Button basic onClick={appShell.initGuestSession}>
+          <Button basic onClick={entity.session.switchToGuest}>
             Continue as guest
           </Button>
         </Container>
