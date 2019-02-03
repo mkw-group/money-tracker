@@ -9,7 +9,7 @@ interface GroupEditFormPros {
 }
 
 @observer
-export class GroupEditForm extends Component<GroupEditFormPros> {
+export class EditForm extends Component<GroupEditFormPros> {
   private inputRef = React.createRef<Input>();
 
   componentDidMount() {
@@ -34,7 +34,7 @@ export class GroupEditForm extends Component<GroupEditFormPros> {
     const { store, group } = this.props;
 
     return (
-      <Form onSubmit={() => store.saveGroup(group)}>
+      <Form onSubmit={() => store.save(group)}>
         <Input
           size="big"
           value={store.ui.editGroupName}

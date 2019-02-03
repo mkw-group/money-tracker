@@ -2,7 +2,7 @@ import { SyntheticEvent } from 'react';
 import { InputOnChangeData } from 'semantic-ui-react';
 import { observable, action, IObservableArray } from 'mobx';
 import { reorder } from 'util/dnd';
-import { SettingsStorage } from 'features/settings';
+import { SettingsStorage } from 'features/storage';
 
 export interface IAccountGroup {
   id: string;
@@ -32,12 +32,11 @@ class GroupsUI {
 }
 
 export class GroupsStore {
-  @observable groups: IObservableArray<IAccountGroup>;
-  @observable ui: GroupsUI = new GroupsUI();
+  groups: IObservableArray<IAccountGroup>;
+  ui: GroupsUI = new GroupsUI();
 
   constructor(groups: IAccountGroup[]) {
     this.groups = observable(groups);
-
     this.groups.observe(async () => {
       await this.persist();
     });
@@ -57,7 +56,7 @@ export class GroupsStore {
     this.groups.remove(group);
   }
 
-  @action async saveGroup(group: IAccountGroup) {
+  @action async save(group: IAccountGroup) {
     this.ui.editGroupId = undefined;
 
     if (this.ui.editGroupName && this.ui.editGroupName !== group.name) {

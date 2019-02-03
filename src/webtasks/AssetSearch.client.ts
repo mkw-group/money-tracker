@@ -1,15 +1,14 @@
 import fetch from 'isomorphic-fetch';
+import { AssetKind, IAsset } from 'features/settings';
 import {
-  AssetKind,
-  IAsset,
-  AssetSearchResponseItemT,
-  AssetSearchResponseT
-} from 'features/money';
+  IAssetSearchResponse,
+  IAssetSearchResponseItem
+} from './AssetSearch.server';
 
 const endpointUrl = process.env.REACT_APP_ASSET_SEARCH_URL;
 const descriptionMap: Record<
   AssetKind,
-  (item: AssetSearchResponseItemT) => string
+  (item: IAssetSearchResponseItem) => string
 > = {
   currency: () => 'Currency',
   crypto: () => 'Crypto',
@@ -20,7 +19,7 @@ const descriptionMap: Record<
 export async function findAssets(query: string = ''): Promise<IAsset[]> {
   try {
     const res = await fetch(`${endpointUrl}?q=${encodeURIComponent(query)}`);
-    const body: AssetSearchResponseT = await res.json();
+    const body: IAssetSearchResponse = await res.json();
     if (!body.ok) throw new Error(`Response was not ok: ${body}`);
 
     return body.results.map((item) => ({

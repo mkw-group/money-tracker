@@ -10,13 +10,13 @@ import { AccountsSetup } from './components/AccountsSetup';
 import 'styles/dnd.scss';
 import './Wizard.scss';
 
-interface StepT {
+interface IStep {
   key: WizardStep;
   title: string;
   icon: string;
 }
 
-const steps: StepT[] = [
+const steps: IStep[] = [
   {
     key: 'groups',
     title: 'Groups',

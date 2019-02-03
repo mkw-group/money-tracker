@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import cn from 'classnames';
+import classnames from 'classnames';
 import {
   DragDropContext,
   Droppable,
@@ -22,7 +22,7 @@ const AssetsListObserver = observer(
   ({ provided, snapshot, store }: AssetsListObserverProps) => {
     return (
       <div
-        className={cn('DragDropList', {
+        className={classnames('DragDropList', {
           'is-dragging': snapshot.isDraggingOver
         })}
         ref={provided.innerRef}

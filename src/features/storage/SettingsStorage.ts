@@ -1,8 +1,10 @@
 import PouchDB from 'pouchdb';
-import { ISettingsStore } from './store/SettingsStore';
-import { IAccountGroup } from './store/GroupsStore';
-import { ICategory } from './store/CategoriesStore';
-import { IMoneyStore } from './store/MoneyStore';
+import {
+  ISettingsStore,
+  IMoneyStore,
+  IAccountGroup,
+  ICategory
+} from 'features/settings';
 
 interface ISetupStorage {
   _id: string;
@@ -23,7 +25,9 @@ interface IMoneyStorage extends IMoneyStore {
   _id: string;
 }
 
-const SettingsDB = new PouchDB('settings', { auto_compaction: true });
+const SettingsDB = new PouchDB('settings', {
+  auto_compaction: true
+});
 
 export class SettingsStorage {
   static async load(): Promise<ISettingsStore> {

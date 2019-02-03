@@ -1,8 +1,8 @@
 import React, { SyntheticEvent } from 'react';
 import { debounce } from 'lodash';
 import { Dropdown, DropdownProps, DropdownItemProps } from 'semantic-ui-react';
+import { IAsset, AssetId } from 'features/settings';
 import { findAssets } from 'webtasks/AssetSearch.client';
-import { IAsset, AssetId } from 'features/money';
 import './AssetFinderDropdown.scss';
 
 interface Props {

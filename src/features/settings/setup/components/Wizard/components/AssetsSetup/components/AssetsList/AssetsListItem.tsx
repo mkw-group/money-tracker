@@ -1,14 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import cs from 'classnames';
+import classnames from 'classnames';
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot
 } from 'react-beautiful-dnd';
 import { Header, Checkbox, Button } from 'semantic-ui-react';
-import { MoneyStore } from 'features/settings';
-import { IAsset } from 'features/money';
+import { MoneyStore, IAsset } from 'features/settings';
 
 interface AssetListItemObserverProps {
   provided: DraggableProvided;
@@ -21,7 +20,7 @@ const AssetListItemObserver = observer(
   ({ provided, snapshot, store, asset }: AssetListItemObserverProps) => {
     return (
       <div
-        className={cs('DragDropList-item', {
+        className={classnames('DragDropList-item', {
           'is-dragging': snapshot.isDragging
         })}
         ref={provided.innerRef}

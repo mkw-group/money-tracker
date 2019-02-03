@@ -1,4 +1,4 @@
-import { MoneyCode } from 'features/money';
+import { AssetId } from 'features/settings';
 
 enum TransactionKind {
   Expense,
@@ -13,8 +13,8 @@ interface RegularTransactionT {
   note?: string;
   categoryId: string;
   accountId: string;
+  assetId: AssetId;
   amount: number;
-  code: MoneyCode;
 }
 
 interface TransferTransactionT {
@@ -23,11 +23,11 @@ interface TransferTransactionT {
   date: number;
   note?: string;
   accountId: string;
+  assetId: AssetId;
   amount: number;
-  code: MoneyCode;
   linkedAccountId: string;
+  linkedAssetId: AssetId;
   linkedAmount: number;
-  linkedCode: MoneyCode;
 }
 
 type TransactionT = RegularTransactionT | TransferTransactionT;

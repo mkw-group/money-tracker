@@ -2,8 +2,22 @@ import { SyntheticEvent } from 'react';
 import { CheckboxProps } from 'semantic-ui-react';
 import { observable, observe, action, computed } from 'mobx';
 import { reorder } from 'util/dnd';
-import { AssetId, IAsset } from 'features/money';
-import { SettingsStorage } from 'features/settings';
+import { SettingsStorage } from 'features/storage';
+
+export type AssetKind = 'currency' | 'crypto' | 'security';
+export type AssetId = string;
+
+export interface IAsset {
+  id: AssetId;
+  kind: AssetKind;
+  code: string;
+  name: string;
+  exp: number;
+  securityType?: string;
+  securityRegion?: string;
+  securityCurrency?: string;
+  description: string;
+}
 
 export interface IMoneyStore {
   exchangeRate: Record<AssetId, number>;

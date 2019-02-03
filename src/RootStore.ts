@@ -1,5 +1,5 @@
 import React from 'react';
-import { configure, observable } from 'mobx';
+import { configure } from 'mobx';
 import { SettingsStore, WizardUiStore } from 'features/settings';
 import { SessionStore } from 'features/session';
 
@@ -8,8 +8,8 @@ configure({
 });
 
 class RootEntityStore {
-  @observable session: SessionStore;
-  @observable settings: SettingsStore;
+  session: SessionStore;
+  settings: SettingsStore;
 
   private constructor({ session, settings }: RootEntityStore) {
     this.session = session;
@@ -25,12 +25,12 @@ class RootEntityStore {
 }
 
 class RootUiStore {
-  @observable wizard: WizardUiStore = new WizardUiStore();
+  wizard: WizardUiStore = new WizardUiStore();
 }
 
 export class RootStore {
-  @observable entity: RootEntityStore;
-  @observable ui: RootUiStore;
+  entity: RootEntityStore;
+  ui: RootUiStore;
 
   constructor({ entity, ui }: RootStore) {
     this.entity = entity;

@@ -1,5 +1,5 @@
 import React from 'react';
-import cn from 'classnames';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import {
   DragDropContext,
@@ -20,7 +20,10 @@ interface GroupsListObserverProps {
 const GroupsListObserver = observer(
   ({ provided, snapshot, store }: GroupsListObserverProps) => (
     <div
-      className={cn('DragDropList', snapshot.isDraggingOver && 'is-dragging')}
+      className={classnames(
+        'DragDropList',
+        snapshot.isDraggingOver && 'is-dragging'
+      )}
       ref={provided.innerRef}
       {...provided.droppableProps}
     >

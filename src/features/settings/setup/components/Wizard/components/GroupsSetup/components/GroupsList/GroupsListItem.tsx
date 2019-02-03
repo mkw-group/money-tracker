@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import cs from 'classnames';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import {
   Draggable,
@@ -8,7 +8,7 @@ import {
 } from 'react-beautiful-dnd';
 import { Header, Button } from 'semantic-ui-react';
 import { GroupsStore, IAccountGroup } from 'features/settings';
-import { GroupEditForm } from './GroupEditForm';
+import { EditForm } from './EditForm';
 
 interface GroupsListItemObserverProps {
   provided: DraggableProvided;
@@ -25,7 +25,7 @@ class GroupsListItemObserver extends Component<GroupsListItemObserverProps> {
     if (store.ui.editGroupId !== group.id) {
       store.ui.openEditForm(group);
     } else {
-      store.saveGroup(group);
+      store.save(group);
     }
   };
 
@@ -35,7 +35,7 @@ class GroupsListItemObserver extends Component<GroupsListItemObserverProps> {
 
     return (
       <div
-        className={cs(
+        className={classnames(
           'DragDropList-item',
           snapshot.isDragging && 'is-dragging'
         )}
@@ -57,7 +57,7 @@ class GroupsListItemObserver extends Component<GroupsListItemObserverProps> {
         </div>
         <div className="DragDropList-item-label">
           {isEdit ? (
-            <GroupEditForm store={store} group={group} />
+            <EditForm store={store} group={group} />
           ) : (
             <Header>{group.name}</Header>
           )}

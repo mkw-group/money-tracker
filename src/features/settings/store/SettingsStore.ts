@@ -1,5 +1,5 @@
 import { observable, observe, action } from 'mobx';
-import { SettingsStorage } from 'features/settings';
+import { SettingsStorage } from 'features/storage';
 import { MoneyStore, IMoneyStore } from './MoneyStore';
 import { GroupsStore, IAccountGroup } from './GroupsStore';
 import { CategoriesStore, ICategory } from './CategoriesStore';

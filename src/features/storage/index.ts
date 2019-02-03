@@ -1,11 +1,9 @@
-export enum StorageEntity {
-  Accounts = 'accounts',
-  Settings = 'settings',
-  Transactions = 'transactions'
-}
+export * from './SettingsStorage';
+
+export type StorageName = 'settings' | 'transactions';
 
 export interface StorageCredentials {
   username: string;
   password: string;
-  url: Record<StorageEntity, string>;
+  url: Record<StorageName, string>;
 }

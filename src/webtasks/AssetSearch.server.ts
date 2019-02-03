@@ -1,5 +1,14 @@
 import fetch from 'isomorphic-fetch';
-import { AssetSearchResponseItemT, AssetSearchResponseT } from 'features/money';
+import { IAsset } from 'features/settings';
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+export interface IAssetSearchResponse {
+  ok: boolean;
+  results: IAssetSearchResponseItem[];
+}
+
+export type IAssetSearchResponseItem = Omit<IAsset, 'id' | 'description'>;
 
 interface WebtaskContext {
   query: {
@@ -12,7 +21,7 @@ interface WebtaskContext {
 
 type WebtaskRespond = (
   error: null | string,
-  body?: AssetSearchResponseT
+  body?: IAssetSearchResponse
 ) => void;
 // @ts-ignore
 export = AssetSearch;
@@ -35,7 +44,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
     ]
   });
 
-  function getDefaultCurrency(): AssetSearchResponseItemT[] {
+  function getDefaultCurrency(): IAssetSearchResponseItem[] {
     const defaultCurrency = [
       'USD',
       'INR',
@@ -49,7 +58,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
 
     return defaultCurrency.map((code) => {
       const { name, exp = 2 } = PhysicalCurrencyList[code];
-      const asset: AssetSearchResponseItemT = {
+      const asset: IAssetSearchResponseItem = {
         code,
         kind: 'currency',
         name,
@@ -60,7 +69,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
     });
   }
 
-  function findPhysicalCurrency(): AssetSearchResponseItemT[] {
+  function findPhysicalCurrency(): IAssetSearchResponseItem[] {
     return Object.entries(PhysicalCurrencyList)
       .filter(
         ([code, { name }]) =>
@@ -69,7 +78,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
       )
       .slice(0, 10)
       .map(([code, { name, exp = 2 }]) => {
-        const asset: AssetSearchResponseItemT = {
+        const asset: IAssetSearchResponseItem = {
           kind: 'currency',
           name,
           code,
@@ -80,7 +89,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
       });
   }
 
-  function findCryptoCurrency(): AssetSearchResponseItemT[] {
+  function findCryptoCurrency(): IAssetSearchResponseItem[] {
     return Object.entries(DigitalCurrencyList)
       .filter(
         ([code, { name }]) =>
@@ -89,7 +98,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
       )
       .slice(0, 10)
       .map(([code, { name, exp = 8 }]) => {
-        const asset: AssetSearchResponseItemT = {
+        const asset: IAssetSearchResponseItem = {
           kind: 'crypto',
           name,
           code,
@@ -100,7 +109,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
       });
   }
 
-  async function findSecurities(): Promise<AssetSearchResponseItemT[]> {
+  async function findSecurities(): Promise<IAssetSearchResponseItem[]> {
     interface ApiResponseT {
       bestMatches: Array<{
         '1. symbol': string;
@@ -116,7 +125,7 @@ async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
     const body: ApiResponseT = await res.json();
 
     return body.bestMatches.map((item) => {
-      const asset: AssetSearchResponseItemT = {
+      const asset: IAssetSearchResponseItem = {
         kind: 'security',
         exp: 4,
         code: item['1. symbol'],
