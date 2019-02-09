@@ -1,4 +1,7 @@
+import { SyntheticEvent } from 'react';
+import { DropdownProps } from 'semantic-ui-react';
 import { observable, action, computed } from 'mobx';
+import { addLocale, useLocale } from 'ttag';
 import { StorageCredentials } from 'features/storage';
 
 export enum SessionMode {
@@ -16,6 +19,7 @@ interface SessionT {
 
 export class SessionStore {
   @observable mode: SessionMode;
+  @observable locale: string = SessionStore.getUserLocale();
   @observable authToken?: string;
   @observable credentials?: StorageCredentials;
 
@@ -33,6 +37,24 @@ export class SessionStore {
       return new SessionStore(session);
     } else {
       return new SessionStore({ mode: SessionMode.Unknown });
+    }
+  }
+
+  static getUserLocale(): string {
+    return localStorage.getItem('userLocale') || 'en';
+  }
+
+  static loadLocale(): void {
+    const locale = SessionStore.getUserLocale();
+    const translationsObj = require(`../../../i18n/${locale}.po.json`);
+    addLocale(locale, translationsObj);
+    useLocale(locale);
+  }
+
+  @action.bound changeLocale(_: SyntheticEvent, { value }: DropdownProps) {
+    if (String(value) !== this.locale) {
+      localStorage.setItem('userLocale', String(value));
+      window.location.reload();
     }
   }
 

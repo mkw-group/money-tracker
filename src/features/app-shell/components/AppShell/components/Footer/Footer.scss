@@ -1,0 +1,18 @@
+@import 'styles/mixins.scss';
+
+.AppShell-footer {
+  margin: 1.25em 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #707070;
+
+  @include mobile {
+    margin: 2em 0;
+    flex-direction: column-reverse;
+
+    &-links {
+      margin-top: 1em;
+    }
+  }
+}

@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Plural-Forms: nplurals = 2; plural = (n !== 1);\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/features/session/components/SessionPrompt/components/CloudAccount/CloudAccount.tsx:10
+msgid "Cloud account"
+msgstr ""
+
+#: src/features/session/components/SessionPrompt/components/CloudAccount/CloudAccount.tsx:13
+msgid "Synchronize your data between devices"
+msgstr ""
+
+#: src/features/session/components/SessionPrompt/components/CloudAccount/CloudAccount.tsx:15
+msgid "Sign in"
+msgstr ""

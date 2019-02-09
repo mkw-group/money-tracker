@@ -1,6 +1,6 @@
 import React from 'react';
-import DevTools from 'mobx-react-devtools';
-import { observer } from 'mobx-react';
+// import DevTools from 'mobx-react-devtools';
+import { observer } from 'mobx-react-lite';
 import { IPromiseBasedObservable } from 'mobx-utils';
 import { Loader, Message } from 'semantic-ui-react';
 import { AppShell } from 'features/app-shell';
@@ -13,9 +13,9 @@ interface Props {
 /**
  * Initialize app with async loaded root store.
  */
-export const AppRoot = observer(({ store }: Props) => (
+export const AppRoot: React.FunctionComponent<Props> = observer(({ store }) => (
   <ErrorBoundary>
-    <DevTools />
+    {/* <DevTools /> */}
     {store.case({
       pending: () => <Loader active />,
       rejected: (error: Error) => (

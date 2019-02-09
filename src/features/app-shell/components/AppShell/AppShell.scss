@@ -2,7 +2,7 @@
 @import 'styles/mixins.scss';
 
 #moneytracker-root {
-  .u-container {
+  .AppShell {
     max-width: $screen-lg-min;
     margin: 2em auto;
   }
@@ -13,7 +13,7 @@
   }
 
   @include mobile {
-    .u-container {
+    .AppShell {
       margin: 0;
       border: none;
       box-shadow: none;

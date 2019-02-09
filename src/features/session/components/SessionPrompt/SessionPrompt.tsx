@@ -1,15 +1,13 @@
 import React from 'react';
-import { observer } from 'mobx-react';
 import { RouteComponentProps } from '@reach/router';
 import { Divider, Grid, Header, Responsive, Segment } from 'semantic-ui-react';
 import { CloudAccount } from './components/CloudAccount';
 import { GuestAccount } from './components/GuestAccount';
 
-@observer
 export class SessionPrompt extends React.Component<RouteComponentProps> {
   render() {
     return (
-      <Segment.Group className="u-container" size="large" raised>
+      <Segment.Group size="large" raised>
         <Segment>
           <Header icon="dollar sign" content="MoneyTracker" />
         </Segment>

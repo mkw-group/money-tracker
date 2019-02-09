@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { observer } from 'mobx-react-lite';
 import { Button } from 'semantic-ui-react';
-import { observer } from 'mobx-react';
 import { StoreContext } from 'RootStore';
-import { GroupsStore, WizardUiStore } from 'features/settings';
 import { GroupsList } from './components/GroupsList';
 import './GroupsSetup.scss';
 
@@ -12,39 +11,25 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-interface Props {
-  groups: GroupsStore;
-  ui: WizardUiStore;
-}
+export const GroupsSetup = observer(() => {
+  const store = React.useContext(StoreContext);
+  const { groups } = store.entity.settings;
+  const ui = store.ui.wizard;
 
-@observer
-class GroupsSetupObserver extends React.Component<Props> {
-  render() {
-    const { groups, ui } = this.props;
+  return (
+    <div className="GroupsSetup">
+      <p>Groups allow you to organize accounts of different type.</p>
 
-    return (
-      <div className="GroupsSetup">
-        <p>Groups allow you to organize accounts of different type.</p>
+      <GroupsList store={groups} />
 
-        <GroupsList store={groups} />
-
-        <Container>
-          <Button onClick={groups.add} basic>
-            Add new group
-          </Button>
-          <Button onClick={() => ui.completeStep('groups', 'accounts')} primary>
-            Continue
-          </Button>
-        </Container>
-      </div>
-    );
-  }
-}
-
-export const GroupsSetup = () => (
-  <StoreContext.Consumer>
-    {({ entity, ui }) => (
-      <GroupsSetupObserver groups={entity.settings.groups} ui={ui.wizard} />
-    )}
-  </StoreContext.Consumer>
-);
+      <Container>
+        <Button onClick={groups.add} basic>
+          Add new group
+        </Button>
+        <Button onClick={() => ui.completeStep('groups', 'accounts')} primary>
+          Continue
+        </Button>
+      </Container>
+    </div>
+  );
+});

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import React from 'react';
+import { observer } from 'mobx-react-lite';
 import { Form, Input } from 'semantic-ui-react';
 import { GroupsStore, IAccountGroup } from 'features/settings';
 
@@ -8,30 +8,26 @@ interface GroupEditFormPros {
   group: IAccountGroup;
 }
 
-@observer
-export class EditForm extends Component<GroupEditFormPros> {
-  private inputRef = React.createRef<Input>();
+export const EditForm: React.FunctionComponent<GroupEditFormPros> = observer(
+  ({ store, group }) => {
+    // @ts-ignore
+    const inputRef = React.useRef();
+    const keydownListener = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') {
+        store.ui.closeEditForm();
+      }
+    };
 
-  componentDidMount() {
-    if (this.inputRef && this.inputRef.current) {
-      this.inputRef.current.focus();
+    React.useEffect(() => {
+      if (inputRef && inputRef.current) {
+        inputRef.current.focus();
+        window.addEventListener('keydown', keydownListener);
 
-      window.addEventListener('keydown', this.keydownListener);
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.keydownListener);
-  }
-
-  keydownListener = (ev: KeyboardEvent) => {
-    if (ev.key === 'Escape') {
-      this.props.store.ui.closeEditForm();
-    }
-  };
-
-  render() {
-    const { store, group } = this.props;
+        return () => {
+          window.removeEventListener('keydown', keydownListener);
+        };
+      }
+    });
 
     return (
       <Form onSubmit={() => store.save(group)}>
@@ -39,11 +35,11 @@ export class EditForm extends Component<GroupEditFormPros> {
           size="big"
           value={store.ui.editGroupName}
           onChange={store.ui.updateGroupName}
-          ref={this.inputRef}
+          ref={inputRef}
           transparent
           fluid
         />
       </Form>
     );
   }
-}
+);

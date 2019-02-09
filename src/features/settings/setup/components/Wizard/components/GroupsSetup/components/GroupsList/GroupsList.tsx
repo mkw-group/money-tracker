@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import {
   DragDropContext,
   Droppable,
@@ -10,15 +10,19 @@ import {
 } from 'react-beautiful-dnd';
 import { GroupsStore } from 'features/settings/store/GroupsStore';
 import { GroupsListItem } from './GroupsListItem';
+import { StoreContext } from 'RootStore';
 
-interface GroupsListObserverProps {
+interface DroppableGroupsListProps {
   provided: DroppableProvided;
   snapshot: DroppableStateSnapshot;
-  store: GroupsStore;
 }
 
-const GroupsListObserver = observer(
-  ({ provided, snapshot, store }: GroupsListObserverProps) => (
+const DroppableGroupsList: React.FunctionComponent<
+  DroppableGroupsListProps
+> = observer(({ provided, snapshot }) => {
+  const store = React.useContext(StoreContext).entity.settings.groups;
+
+  return (
     <div
       className={classnames(
         'DragDropList',
@@ -28,18 +32,17 @@ const GroupsListObserver = observer(
       {...provided.droppableProps}
     >
       {store.groups.map((group, index) => (
-        <GroupsListItem store={store} group={group} index={index} key={index} />
+        <GroupsListItem group={group} index={index} key={index} />
       ))}
       {provided.placeholder}
     </div>
-  )
-);
+  );
+});
 
 interface Props {
   store: GroupsStore;
 }
 
-@observer
 export class GroupsList extends React.Component<Props> {
   onDragStart = () => {
     if (window.navigator.vibrate) {
@@ -54,8 +57,6 @@ export class GroupsList extends React.Component<Props> {
   };
 
   render() {
-    const { store } = this.props;
-
     return (
       <DragDropContext
         onDragStart={this.onDragStart}
@@ -63,11 +64,7 @@ export class GroupsList extends React.Component<Props> {
       >
         <Droppable droppableId="groups">
           {(provided, snapshot) => (
-            <GroupsListObserver
-              store={store}
-              provided={provided}
-              snapshot={snapshot}
-            />
+            <DroppableGroupsList provided={provided} snapshot={snapshot} />
           )}
         </Droppable>
       </DragDropContext>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import classnames from 'classnames';
 import {
   DragDropContext,
@@ -11,36 +11,33 @@ import {
 import { MoneyStore } from 'features/settings';
 import { AssetsListItem } from './AssetsListItem';
 import './AssetsList.scss';
+import { StoreContext } from 'RootStore';
 
-interface AssetsListObserverProps {
+interface DroppableAssetsListProps {
   provided: DroppableProvided;
   snapshot: DroppableStateSnapshot;
-  store: MoneyStore;
 }
 
-const AssetsListObserver = observer(
-  ({ provided, snapshot, store }: AssetsListObserverProps) => {
-    return (
-      <div
-        className={classnames('DragDropList', {
-          'is-dragging': snapshot.isDraggingOver
-        })}
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-      >
-        {store.assets.map((asset, index) => (
-          <AssetsListItem
-            store={store}
-            asset={asset}
-            index={index}
-            key={index}
-          />
-        ))}
-        {provided.placeholder}
-      </div>
-    );
-  }
-);
+const DroppableAssetsList: React.FunctionComponent<
+  DroppableAssetsListProps
+> = observer(({ provided, snapshot }) => {
+  const store = React.useContext(StoreContext).entity.settings.money;
+
+  return (
+    <div
+      className={classnames('DragDropList', {
+        'is-dragging': snapshot.isDraggingOver
+      })}
+      ref={provided.innerRef}
+      {...provided.droppableProps}
+    >
+      {store.assets.map((asset, index) => (
+        <AssetsListItem asset={asset} index={index} key={index} />
+      ))}
+      {provided.placeholder}
+    </div>
+  );
+});
 
 interface Props {
   store: MoneyStore;
@@ -60,8 +57,6 @@ export class AssetsList extends React.Component<Props> {
   };
 
   render() {
-    const { store } = this.props;
-
     return (
       <DragDropContext
         onDragStart={this.onDragStart}
@@ -69,11 +64,7 @@ export class AssetsList extends React.Component<Props> {
       >
         <Droppable droppableId="assets">
           {(provided, snapshot) => (
-            <AssetsListObserver
-              store={store}
-              provided={provided}
-              snapshot={snapshot}
-            />
+            <DroppableAssetsList provided={provided} snapshot={snapshot} />
           )}
         </Droppable>
       </DragDropContext>

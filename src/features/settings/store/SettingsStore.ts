@@ -13,9 +13,9 @@ export interface ISettingsStore {
 
 export class SettingsStore {
   @observable isSetupComplete: boolean;
-  @observable money: MoneyStore;
-  @observable groups: GroupsStore;
-  @observable categories: CategoriesStore;
+  money: MoneyStore;
+  groups: GroupsStore;
+  categories: CategoriesStore;
 
   constructor({ isSetupComplete, money, groups, categories }: ISettingsStore) {
     this.isSetupComplete = isSetupComplete;

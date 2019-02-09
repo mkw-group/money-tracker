@@ -1,9 +1,9 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { RouteComponentProps } from '@reach/router';
 import { Header, Segment, Step, Icon } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
-import { WizardStep, WizardUiStore } from 'features/settings';
+import { WizardStep } from 'features/settings';
 import { AssetsSetup } from './components/AssetsSetup';
 import { GroupsSetup } from './components/GroupsSetup';
 import { AccountsSetup } from './components/AccountsSetup';
@@ -46,17 +46,13 @@ const StepComponent: Record<WizardStep, React.ReactNode> = {
   currency: <AssetsSetup />
 };
 
-interface Props {
-  ui: WizardUiStore;
-}
-
-@observer
-class WizardObserver extends React.Component<Props> {
-  render() {
-    const { ui } = this.props;
+export const Wizard: React.FunctionComponent<RouteComponentProps> = observer(
+  () => {
+    const store = React.useContext(StoreContext);
+    const ui = store.ui.wizard;
 
     return (
-      <Segment.Group className="Wizard u-container">
+      <Segment.Group className="Wizard">
         <Segment attached>
           <Header as="h2">
             <Icon name="settings" />
@@ -86,10 +82,4 @@ class WizardObserver extends React.Component<Props> {
       </Segment.Group>
     );
   }
-}
-
-export const Wizard: React.FunctionComponent<RouteComponentProps> = () => (
-  <StoreContext.Consumer>
-    {({ ui }) => <WizardObserver ui={ui.wizard} />}
-  </StoreContext.Consumer>
 );

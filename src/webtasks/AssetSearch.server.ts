@@ -24,7 +24,7 @@ type WebtaskRespond = (
   body?: IAssetSearchResponse
 ) => void;
 // @ts-ignore
-export = AssetSearch;
+// export = AssetSearch;
 
 async function AssetSearch(context: WebtaskContext, respond: WebtaskRespond) {
   const { API_KEY } = context.secrets;
