@@ -1,4 +1,5 @@
 import { SyntheticEvent } from 'react';
+import { t } from 'ttag';
 import { InputOnChangeData } from 'semantic-ui-react';
 import { observable, action, IObservableArray } from 'mobx';
 import { reorder } from 'util/dnd';
@@ -43,7 +44,7 @@ export class GroupsStore {
   }
 
   @action.bound add() {
-    const group = { id: `G${Date.now()}`, name: 'New group' };
+    const group = { id: `G${Date.now()}`, name: t`New group` };
     this.groups.unshift(group);
     this.ui.openEditForm(group);
   }

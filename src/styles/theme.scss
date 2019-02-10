@@ -17,7 +17,11 @@ body {
 
 #moneytracker-root {
   .ui.primary.button {
-    background-color: #3f51b5 !important;
+    background-color: #3f51b5;
+
+    &:hover {
+      background-color: #253aaf;
+    }
   }
 
   .ui.steps .step.active .title {
@@ -31,15 +35,26 @@ body {
 
   .ui.button {
     margin: 0;
+
+    &:hover,
+    &:focus {
+      box-shadow: inset 0 0 4px rgba(34, 36, 38, 0.5);
+    }
+  }
+
+  .ui.button:not(.circular) {
+    font-weight: 500;
+    font-family: $font-system;
+    padding: 10px 1.5em 12px 1.5em;
   }
 
   .ui.label,
   .ui.header {
-    font-weight: 400 !important;
+    font-weight: 400;
   }
 
   .ui.dropdown .menu .active.item {
-    font-weight: 500 !important;
+    font-weight: 500;
   }
 
   .ui.header {

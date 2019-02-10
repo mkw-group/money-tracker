@@ -1,3 +1,4 @@
+import { t } from 'ttag';
 import PouchDB from 'pouchdb';
 import {
   ISettingsStore,
@@ -81,10 +82,10 @@ export class SettingsStorage {
       return {
         _id: storageId,
         groups: [
-          { id: `G${timestamp++}`, name: 'Cash' },
-          { id: `G${timestamp++}`, name: 'Bank Account' },
-          { id: `G${timestamp++}`, name: 'Credit' },
-          { id: `G${timestamp++}`, name: 'Deposit' }
+          { id: `G${timestamp++}`, name: t`Cash` },
+          { id: `G${timestamp++}`, name: t`Bank Account` },
+          { id: `G${timestamp++}`, name: t`Credit` },
+          { id: `G${timestamp++}`, name: t`Deposit` }
         ]
       };
     }

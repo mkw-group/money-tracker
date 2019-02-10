@@ -4,7 +4,7 @@ import { StoreContext } from 'RootStore';
 
 const languageOptions = [
   { key: 'en', text: 'English', value: 'en' },
-  { key: 'ru', text: 'Russian', value: 'ru' }
+  { key: 'ru', text: 'Russian - Русский', value: 'ru' }
 ];
 
 export const LanguageSelector: React.FunctionComponent = () => {
@@ -13,14 +13,16 @@ export const LanguageSelector: React.FunctionComponent = () => {
   return (
     <div className="AppShell-languageSelector">
       <Dropdown
-        button
         className="icon"
-        floating
-        labeled
         icon="world"
+        text="Language"
+        value={store.entity.session.locale}
         options={languageOptions}
         onChange={store.entity.session.changeLocale}
-        text="Select Language"
+        selectOnNavigation={false}
+        floating
+        labeled
+        button
       />
     </div>
   );

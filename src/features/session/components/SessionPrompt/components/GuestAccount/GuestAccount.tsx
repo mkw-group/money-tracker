@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { t } from 'ttag';
 import { Button, Container, Header, Icon } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
 
@@ -8,12 +9,12 @@ export const GuestAccount = () => {
     <React.Fragment>
       <Header icon>
         <Icon name="user secret" />
-        Guest account
+        {t`Guest account`}
       </Header>
       <Container>
-        <p>Data stored only on current device without backup</p>
+        <p>{t`Data stored only on current device without backup`}</p>
         <Button basic onClick={store.entity.session.switchToGuest}>
-          Continue as guest
+          {t`Continue as guest`}
         </Button>
       </Container>
     </React.Fragment>

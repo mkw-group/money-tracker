@@ -52,8 +52,10 @@ export class SessionStore {
   }
 
   @action.bound changeLocale(_: SyntheticEvent, { value }: DropdownProps) {
-    if (String(value) !== this.locale) {
-      localStorage.setItem('userLocale', String(value));
+    const locale = String(value);
+    if (locale !== this.locale) {
+      this.locale = locale;
+      localStorage.setItem('userLocale', locale);
       window.location.reload();
     }
   }

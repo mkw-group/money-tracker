@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from 'ttag';
 import { RouteComponentProps } from '@reach/router';
 import { Divider, Grid, Header, Responsive, Segment } from 'semantic-ui-react';
 import { CloudAccount } from './components/CloudAccount';
@@ -13,7 +14,7 @@ export class SessionPrompt extends React.Component<RouteComponentProps> {
         </Segment>
         <Responsive as={Segment} minWidth={920} padded>
           <Grid columns={2} stackable textAlign="center">
-            <Divider vertical>Or</Divider>
+            <Divider vertical>{t`or`}</Divider>
             <Grid.Row verticalAlign="middle" stretched>
               <Grid.Column>
                 <CloudAccount />
@@ -28,7 +29,7 @@ export class SessionPrompt extends React.Component<RouteComponentProps> {
           <Segment basic>
             <CloudAccount />
           </Segment>
-          <Divider horizontal>Or</Divider>
+          <Divider horizontal>{t`or`}</Divider>
           <Segment basic>
             <GuestAccount />
           </Segment>

@@ -18,3 +18,72 @@ msgstr "Синхронизируйте ваши данные между устр
 #: src/features/session/components/SessionPrompt/components/CloudAccount/CloudAccount.tsx:15
 msgid "Sign in"
 msgstr "Войти"
+
+#: src/features/storage/SettingsStorage.ts:85
+msgid "Cash"
+msgstr "Наличные"
+
+#: src/features/storage/SettingsStorage.ts:86
+msgid "Bank Account"
+msgstr "Банковские счета"
+
+#: src/features/storage/SettingsStorage.ts:87
+msgid "Credit"
+msgstr "Кредиты"
+
+#: src/features/storage/SettingsStorage.ts:88
+msgid "Deposit"
+msgstr "Депозиты"
+
+#: src/features/settings/setup/components/Wizard/Wizard.tsx:65
+msgid "Groups"
+msgstr "Группы"
+
+#: src/features/settings/setup/components/Wizard/Wizard.tsx:68
+msgid "Accounts"
+msgstr "Счета"
+
+#: src/features/settings/setup/components/Wizard/Wizard.tsx:71
+msgid "Categories"
+msgstr "Категории"
+
+#: src/features/settings/setup/components/Wizard/Wizard.tsx:72
+msgid "Currency"
+msgstr "Валюты"
+
+#: src/features/settings/setup/components/Wizard/Wizard.tsx:60
+msgid "First-time user setup"
+msgstr "Первоначальная настройка"
+
+#: src/features/settings/setup/components/Wizard/components/GroupsSetup/GroupsSetup.tsx:22
+msgid "Groups allow you to organize accounts of different type."
+msgstr "Упорядочите ваши счета с помощью групп."
+
+#: src/features/settings/setup/components/Wizard/components/GroupsSetup/GroupsSetup.tsx:28
+msgid "Add new group"
+msgstr "Добавить группу"
+
+#: src/features/settings/setup/components/Wizard/components/GroupsSetup/GroupsSetup.tsx:31
+msgid "Continue"
+msgstr "Продолжить"
+
+#: src/features/session/components/SessionPrompt/SessionPrompt.tsx:17
+#: src/features/session/components/SessionPrompt/SessionPrompt.tsx:32
+msgid "or"
+msgstr "или"
+
+#: src/features/session/components/SessionPrompt/components/GuestAccount/GuestAccount.tsx:12
+msgid "Guest account"
+msgstr "Гостевой аккаунт"
+
+#: src/features/session/components/SessionPrompt/components/GuestAccount/GuestAccount.tsx:15
+msgid "Data stored only on current device without backup"
+msgstr "Данные будут сохранены только на этом устройстве"
+
+#: src/features/session/components/SessionPrompt/components/GuestAccount/GuestAccount.tsx:17
+msgid "Continue as guest"
+msgstr "Продолжить"
+
+#: src/features/settings/store/GroupsStore.ts:47
+msgid "New group"
+msgstr "Новая группа"
