@@ -19,7 +19,7 @@ interface AssetsListItemObserverProps {
 const AssetsListItemObserver: React.FunctionComponent<
   AssetsListItemObserverProps
 > = observer(({ provided, snapshot, asset }) => {
-  const store = React.useContext(StoreContext).entity.settings.money;
+  const store = React.useContext(StoreContext).entity.money;
 
   return (
     <div

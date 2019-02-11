@@ -13,7 +13,7 @@ Sentry.init({
   dsn: 'https://5ae855d4c1d840c1b06679123069574f@sentry.io/1335198'
 });
 
-SessionStore.loadLocale();
+SessionStore.getInstance().loadLocale();
 
 render(
   <AppRoot store={fromPromise(RootStore.init())} />,

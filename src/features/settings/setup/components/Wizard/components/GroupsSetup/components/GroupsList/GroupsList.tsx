@@ -8,9 +8,9 @@ import {
   DroppableStateSnapshot,
   OnDragEndResponder
 } from 'react-beautiful-dnd';
-import { GroupsStore } from 'features/settings/store/GroupsStore';
 import { GroupsListItem } from './GroupsListItem';
 import { StoreContext } from 'RootStore';
+import { SettingsStore } from 'features/settings/store/SettingsStore';
 
 interface DroppableGroupsListProps {
   provided: DroppableProvided;
@@ -20,7 +20,7 @@ interface DroppableGroupsListProps {
 const DroppableGroupsList: React.FunctionComponent<
   DroppableGroupsListProps
 > = observer(({ provided, snapshot }) => {
-  const store = React.useContext(StoreContext).entity.settings.groups;
+  const { settings } = React.useContext(StoreContext).entity;
 
   return (
     <div
@@ -31,8 +31,8 @@ const DroppableGroupsList: React.FunctionComponent<
       ref={provided.innerRef}
       {...provided.droppableProps}
     >
-      {store.groups.map((group, index) => (
-        <GroupsListItem group={group} index={index} key={index} />
+      {settings.groups.map((groupId, index) => (
+        <GroupsListItem groupId={groupId} index={index} key={index} />
       ))}
       {provided.placeholder}
     </div>
@@ -40,7 +40,7 @@ const DroppableGroupsList: React.FunctionComponent<
 });
 
 interface Props {
-  store: GroupsStore;
+  settings: SettingsStore;
 }
 
 export class GroupsList extends React.Component<Props> {
@@ -52,7 +52,7 @@ export class GroupsList extends React.Component<Props> {
 
   onDragEnd: OnDragEndResponder = ({ destination, source }) => {
     if (destination && destination.index !== source.index) {
-      this.props.store.move(source.index, destination.index);
+      this.props.settings.moveGroup(source.index, destination.index);
     }
   };
 

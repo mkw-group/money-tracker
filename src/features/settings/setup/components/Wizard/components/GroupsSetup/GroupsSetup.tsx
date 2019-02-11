@@ -14,20 +14,21 @@ const Container = styled.div`
 
 export const GroupsSetup = observer(() => {
   const store = React.useContext(StoreContext);
-  const { groups } = store.entity.settings;
-  const ui = store.ui.wizard;
 
   return (
     <div className="GroupsSetup">
       <p>{t`Groups allow you to organize accounts of different type.`}</p>
 
-      <GroupsList store={groups} />
+      <GroupsList settings={store.entity.settings} />
 
       <Container>
-        <Button onClick={groups.add} basic>
+        <Button onClick={store.entity.groups.add} basic>
           {t`Add new group`}
         </Button>
-        <Button onClick={() => ui.completeStep('groups', 'accounts')} primary>
+        <Button
+          onClick={() => store.ui.wizard.completeStep('groups', 'accounts')}
+          primary
+        >
           {t`Continue`}
         </Button>
       </Container>

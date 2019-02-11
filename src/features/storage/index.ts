@@ -1,9 +1,4 @@
+export * from './Database';
+export * from './GroupsStorage';
+export * from './AccountsStorage';
 export * from './SettingsStorage';
-
-export type StorageName = 'settings' | 'transactions';
-
-export interface StorageCredentials {
-  username: string;
-  password: string;
-  url: Record<StorageName, string>;
-}

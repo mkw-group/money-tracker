@@ -1,3 +1,3 @@
-export { SessionStore } from './SessionStore';
-export { SessionPrompt } from './components/SessionPrompt';
-export { SignIn } from './components/SignIn';
+export * from './SessionStore';
+export * from './components/SessionPrompt';
+export * from './components/SignIn';

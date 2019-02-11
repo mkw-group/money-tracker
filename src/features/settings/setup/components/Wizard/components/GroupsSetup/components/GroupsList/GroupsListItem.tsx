@@ -7,21 +7,22 @@ import {
   DraggableStateSnapshot
 } from 'react-beautiful-dnd';
 import { Header, Button } from 'semantic-ui-react';
-import { IAccountGroup } from 'features/settings';
-import { EditForm } from './EditForm';
 import { StoreContext } from 'RootStore';
+import { GroupId } from 'features/settings';
+import { EditForm } from './EditForm';
 
 interface GroupsListItemObserverProps {
   provided: DraggableProvided;
   snapshot: DraggableStateSnapshot;
-  group: IAccountGroup;
+  groupId: GroupId;
 }
 
 const GroupsListItemObserver: React.FunctionComponent<
   GroupsListItemObserverProps
-> = observer(({ provided, snapshot, group }) => {
-  const store = React.useContext(StoreContext).entity.settings.groups;
-  const isEdit = store.ui.editGroupId === group.id;
+> = observer(({ provided, snapshot, groupId }) => {
+  const store = React.useContext(StoreContext).entity.groups;
+  const group = store.getById(groupId);
+  const isEdit = store.form.id === group.id;
   return (
     <div
       className={classnames(
@@ -37,8 +38,8 @@ const GroupsListItemObserver: React.FunctionComponent<
           size="tiny"
           icon={isEdit ? 'check' : 'pencil'}
           onClick={() => {
-            if (store.ui.editGroupId !== group.id) {
-              store.ui.openEditForm(group);
+            if (!isEdit) {
+              store.form.openForm(group);
             } else {
               store.save(group);
             }
@@ -58,7 +59,7 @@ const GroupsListItemObserver: React.FunctionComponent<
         <Button
           icon="remove"
           size="tiny"
-          disabled={store.groups.length === 1}
+          disabled={store.length === 1}
           onClick={() => store.remove(group)}
           circular
         />
@@ -68,20 +69,20 @@ const GroupsListItemObserver: React.FunctionComponent<
 });
 
 interface Props {
-  group: IAccountGroup;
+  groupId: GroupId;
   index: number;
 }
 
 export const GroupsListItem: React.FunctionComponent<Props> = ({
-  group,
+  groupId,
   index
 }) => (
-  <Draggable draggableId={group.id} index={index}>
+  <Draggable draggableId={groupId} index={index}>
     {(provided, snapshot) => (
       <GroupsListItemObserver
         provided={provided}
         snapshot={snapshot}
-        group={group}
+        groupId={groupId}
       />
     )}
   </Draggable>

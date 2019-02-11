@@ -1,28 +1,32 @@
 import React from 'react';
+import { t } from 'ttag';
+import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
+import { Button } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
-import { Button, Header } from 'semantic-ui-react';
+import { GroupsList } from './components/GroupsList';
+
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 export const AccountsSetup = observer(() => {
   const store = React.useContext(StoreContext);
 
   return (
-    <div className="GroupsSetup">
+    <div className="AccountsSetup">
       <p>Create accounts</p>
-      <div className="DragDropList">
-        {store.entity.settings.groups.map(({ id, name }) => (
-          <div className="DragDropList-item" key={id}>
-            <div className="DragDropList-item-label">
-              <Header>{name}</Header>
-            </div>
-            <div className="DragDropList-item-button">
-              <Button size="tiny" basic>
-                Add account
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <GroupsList
+        settings={store.entity.settings}
+        groups={store.entity.groups}
+      />
+      <Container>
+        <Button basic>{t`Create account`}</Button>
+        <div>
+          <Button primary>{t`Continue`}</Button>
+        </div>
+      </Container>
     </div>
   );
 });

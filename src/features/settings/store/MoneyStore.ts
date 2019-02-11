@@ -37,12 +37,16 @@ export class MoneyStore {
 
     observe(this, async ({ object }) => {
       const { exchangeRate, baseCurrency, assets } = object;
-      await SettingsStorage.persistMoney({
-        exchangeRate,
-        baseCurrency,
-        assets
-      });
+      // await SettingsStorage.persistMoney({
+      //   exchangeRate,
+      //   baseCurrency,
+      //   assets
+      // });
     });
+  }
+
+  public static async init(): Promise<MoneyStore> {
+    return {} as MoneyStore;
   }
 
   @computed get assetsIdSet(): Set<AssetId> {

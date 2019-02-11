@@ -6,7 +6,7 @@ import { AssetFinderDropdown } from './components/AssetFinderDropdown';
 import { AssetsList } from './components/AssetsList';
 
 export const AssetsSetup = observer(() => {
-  const { money } = React.useContext(StoreContext).entity.settings;
+  // const { money } = React.useContext(StoreContext).entity.settings;
 
   return (
     <div className="AssetsSetup">
@@ -20,13 +20,13 @@ export const AssetsSetup = observer(() => {
       </p>
       <Form>
         <Form.Field>
-          <AssetFinderDropdown
+          {/* <AssetFinderDropdown
             selected={money.assetsIdSet}
             onSelect={money.addAsset}
-          />
+          /> */}
         </Form.Field>
       </Form>
-      <AssetsList store={money} />
+      {/* <AssetsList store={money} /> */}
     </div>
   );
 });

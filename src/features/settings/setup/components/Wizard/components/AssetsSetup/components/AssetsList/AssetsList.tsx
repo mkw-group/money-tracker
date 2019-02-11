@@ -21,7 +21,7 @@ interface DroppableAssetsListProps {
 const DroppableAssetsList: React.FunctionComponent<
   DroppableAssetsListProps
 > = observer(({ provided, snapshot }) => {
-  const store = React.useContext(StoreContext).entity.settings.money;
+  const store = React.useContext(StoreContext).entity.money;
 
   return (
     <div

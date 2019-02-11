@@ -1,151 +1,60 @@
-import { t } from 'ttag';
-import PouchDB from 'pouchdb';
-import {
-  ISettingsStore,
-  IMoneyStore,
-  IAccountGroup,
-  ICategory
-} from 'features/settings';
+import { AccountId, GroupId, ISettingsStore } from 'features/settings';
+import { localDB } from './Database';
 
-interface ISetupStorage {
-  _id: string;
+interface ISettingsStorage extends PouchDB.Core.IdMeta {
   isSetupComplete: boolean;
+  groups: GroupId[];
+  accounts: Record<GroupId, AccountId[]>;
 }
-
-interface IGroupsStorage {
-  _id: string;
-  groups: IAccountGroup[];
-}
-
-interface ICategoriesStorage {
-  _id: string;
-  categories: ICategory[];
-}
-
-interface IMoneyStorage extends IMoneyStore {
-  _id: string;
-}
-
-const SettingsDB = new PouchDB('settings', {
-  auto_compaction: true
-});
 
 export class SettingsStorage {
-  static async load(): Promise<ISettingsStore> {
-    const { isSetupComplete } = await SettingsStorage.loadSetup();
-    const { groups } = await SettingsStorage.loadGroups();
-    const { categories } = await SettingsStorage.loadCategories();
-    const {
-      baseCurrency,
-      assets,
-      exchangeRate
-    } = await SettingsStorage.loadMoney();
+  private documentId: string = 'SETTINGS';
 
+  constructor(private defaultGroupIds: GroupId[]) {}
+
+  private getDefaultSettings(): ISettingsStore {
     return {
-      isSetupComplete,
-      groups,
-      categories,
-      money: {
-        baseCurrency,
-        assets,
-        exchangeRate
-      }
+      isSetupComplete: false,
+      groups: this.defaultGroupIds,
+      accounts: this.defaultGroupIds.reduce(
+        (acc, groupId) => {
+          acc[groupId] = [];
+
+          return acc;
+        },
+        {} as Record<GroupId, AccountId[]>
+      )
     };
   }
 
-  private static async loadSetup(): Promise<ISetupStorage> {
-    const storageId = 'setup';
+  public async load(): Promise<ISettingsStore> {
     try {
-      return await SettingsDB.get(storageId);
+      const { isSetupComplete, groups, accounts } = await localDB.get<
+        ISettingsStorage
+      >(this.documentId);
+
+      return { isSetupComplete, groups, accounts };
     } catch (error) {
       if (error.status !== 404) {
         throw error;
       }
 
-      return {
-        _id: storageId,
-        isSetupComplete: false
-      };
+      return this.getDefaultSettings();
     }
   }
 
-  private static async loadGroups(): Promise<IGroupsStorage> {
-    const storageId = 'groups';
+  public async save(settings: ISettingsStore) {
     try {
-      return await SettingsDB.get<IGroupsStorage>(storageId);
+      const doc = await localDB.get<ISettingsStorage>(this.documentId);
+      await localDB.put({ ...doc, ...settings });
     } catch (error) {
       if (error.status !== 404) {
         throw error;
       }
-      let timestamp = Date.now();
-
-      return {
-        _id: storageId,
-        groups: [
-          { id: `G${timestamp++}`, name: t`Cash` },
-          { id: `G${timestamp++}`, name: t`Bank Account` },
-          { id: `G${timestamp++}`, name: t`Credit` },
-          { id: `G${timestamp++}`, name: t`Deposit` }
-        ]
-      };
+      await localDB.put<ISettingsStorage>({
+        _id: this.documentId,
+        ...settings
+      });
     }
-  }
-
-  private static async loadCategories(): Promise<ICategoriesStorage> {
-    const storageId = 'categories';
-    try {
-      return await SettingsDB.get<ICategoriesStorage>(storageId);
-    } catch (error) {
-      if (error.status !== 404) {
-        throw error;
-      }
-
-      return {
-        _id: storageId,
-        categories: []
-      };
-    }
-  }
-
-  private static async loadMoney(): Promise<IMoneyStorage> {
-    const storageId = 'money';
-    try {
-      return await SettingsDB.get<IMoneyStorage>(storageId);
-    } catch (error) {
-      if (error.status !== 404) {
-        throw error;
-      }
-
-      return {
-        _id: storageId,
-        exchangeRate: {},
-        baseCurrency: '',
-        assets: []
-      };
-    }
-  }
-
-  static async persistSetup(isSetupComplete: boolean): Promise<void> {
-    const doc = await SettingsStorage.loadSetup();
-
-    await SettingsDB.put({ ...doc, isSetupComplete });
-  }
-
-  static async persistGroups(groups: IAccountGroup[]): Promise<void> {
-    const doc = await SettingsStorage.loadGroups();
-
-    await SettingsDB.put<IGroupsStorage>({ ...doc, groups });
-  }
-
-  static async persistCategories(categories: ICategory[]): Promise<void> {
-    const doc = await SettingsStorage.loadCategories();
-
-    await SettingsDB.put<ICategoriesStorage>({ ...doc, categories });
-  }
-
-  static async persistMoney(money: IMoneyStore): Promise<void> {
-    const doc = await SettingsStorage.loadMoney();
-
-    await SettingsDB.put<IMoneyStorage>({ ...doc, ...money });
   }
 }

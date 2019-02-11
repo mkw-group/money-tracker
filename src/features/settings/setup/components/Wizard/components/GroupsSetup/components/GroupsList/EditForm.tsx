@@ -12,9 +12,9 @@ export const EditForm: React.FunctionComponent<GroupEditFormPros> = observer(
   ({ store, group }) => {
     // @ts-ignore
     const inputRef = React.useRef();
-    const keydownListener = (ev: KeyboardEvent) => {
-      if (ev.key === 'Escape') {
-        store.ui.closeEditForm();
+    const keydownListener = ({ key }: KeyboardEvent) => {
+      if (key === 'Escape') {
+        store.form.closeForm();
       }
     };
 
@@ -23,9 +23,7 @@ export const EditForm: React.FunctionComponent<GroupEditFormPros> = observer(
         inputRef.current.focus();
         window.addEventListener('keydown', keydownListener);
 
-        return () => {
-          window.removeEventListener('keydown', keydownListener);
-        };
+        return () => window.removeEventListener('keydown', keydownListener);
       }
     });
 
@@ -33,8 +31,8 @@ export const EditForm: React.FunctionComponent<GroupEditFormPros> = observer(
       <Form onSubmit={() => store.save(group)}>
         <Input
           size="big"
-          value={store.ui.editGroupName}
-          onChange={store.ui.updateGroupName}
+          value={store.form.name}
+          onChange={store.form.updateGroupName}
           ref={inputRef}
           transparent
           fluid

@@ -1,69 +1,75 @@
+import EventEmitter from 'events';
 import { SyntheticEvent } from 'react';
 import { t } from 'ttag';
 import { InputOnChangeData } from 'semantic-ui-react';
-import { observable, action, IObservableArray } from 'mobx';
-import { reorder } from 'util/dnd';
-import { SettingsStorage } from 'features/storage';
+import { observable, action, computed, IObservableArray } from 'mobx';
+import { GroupsStorage } from 'features/storage';
 
+// Account ids follow pattern `G${timestamp}`
+export type GroupId = string;
 export interface IAccountGroup {
-  id: string;
+  id: GroupId;
   name: string;
 }
 
-class GroupsUI {
-  @observable editGroupId?: string;
-  @observable editGroupName?: string;
-
-  @action openEditForm(group: IAccountGroup) {
-    this.editGroupId = group.id;
-    this.editGroupName = group.name;
-  }
-
-  @action closeEditForm() {
-    this.editGroupId = undefined;
-    this.editGroupName = undefined;
-  }
-
-  @action.bound updateGroupName(
-    _: SyntheticEvent,
-    { value }: InputOnChangeData
-  ) {
-    this.editGroupName = value;
-  }
-}
-
 export class GroupsStore {
-  groups: IObservableArray<IAccountGroup>;
-  ui: GroupsUI = new GroupsUI();
+  public form: Form = new Form();
+  private groups: IObservableArray<IAccountGroup>;
+  private eventManager: EventEmitter = new EventEmitter();
 
-  constructor(groups: IAccountGroup[]) {
+  constructor(groups: IAccountGroup[], private storage: GroupsStorage) {
     this.groups = observable(groups);
-    this.groups.observe(async () => {
-      await this.persist();
-    });
   }
 
-  @action.bound add() {
-    const group = { id: `G${Date.now()}`, name: t`New group` };
-    this.groups.unshift(group);
-    this.ui.openEditForm(group);
+  static async init(): Promise<GroupsStore> {
+    const storage = new GroupsStorage();
+    const groups = await storage.loadAll();
+
+    return new GroupsStore(groups, storage);
   }
 
-  @action move(startIndex: number, endIndex: number) {
-    this.groups.replace(reorder(this.groups, startIndex, endIndex));
+  public getById(id: GroupId): IAccountGroup {
+    const group = this.groups.find((g) => g.id === id);
+    if (!group) {
+      throw new Error(`Group with ID ${id} not found.`);
+    }
+
+    return group;
   }
 
-  @action remove(group: IAccountGroup) {
+  @action.bound async add() {
+    const group = {
+      id: `G${Date.now()}`,
+      name: t`New group`
+    };
+
+    this.groups.push(group);
+    this.eventManager.emit('add', group);
+    this.form.openForm(group);
+    await this.storage.save(group);
+  }
+
+  @action async remove(group: IAccountGroup) {
     this.groups.remove(group);
+    this.eventManager.emit('remove', group);
+    await this.storage.remove(group);
   }
 
   @action async save(group: IAccountGroup) {
-    this.ui.editGroupId = undefined;
+    this.form.id = undefined;
 
-    if (this.ui.editGroupName && this.ui.editGroupName !== group.name) {
-      group.name = this.ui.editGroupName;
-      await this.persist();
+    if (this.form.name && this.form.name !== group.name) {
+      group.name = this.form.name;
+      await this.storage.save(group);
     }
+  }
+
+  @computed get length() {
+    return this.groups.length;
+  }
+
+  public on(event: string, listener: (group: IAccountGroup) => void) {
+    this.eventManager.addListener(event, listener);
   }
 
   map<U>(
@@ -76,8 +82,26 @@ export class GroupsStore {
   ): U[] {
     return this.groups.map(callback, thisArg);
   }
+}
 
-  private async persist() {
-    await SettingsStorage.persistGroups(this.groups);
+class Form {
+  @observable id?: GroupId;
+  @observable name?: string;
+
+  @action openForm(group: IAccountGroup) {
+    this.id = group.id;
+    this.name = group.name;
+  }
+
+  @action closeForm() {
+    this.id = undefined;
+    this.name = undefined;
+  }
+
+  @action.bound updateGroupName(
+    _: SyntheticEvent,
+    { value }: InputOnChangeData
+  ) {
+    this.name = value;
   }
 }
