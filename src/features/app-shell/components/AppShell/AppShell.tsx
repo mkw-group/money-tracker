@@ -2,10 +2,10 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Router, navigate } from '@reach/router';
 import { StoreContext } from 'RootStore';
-import { SetupRouter, Wizard } from 'features/settings';
-import { SessionPrompt, SignIn } from 'features/session';
+import { SetupRouter, Wizard } from 'features/settings/components';
+import { SessionPrompt, SignIn } from 'features/session/components';
 import { Dashboard } from 'features/dashboard';
-import { Footer } from './components/Footer';
+import { Footer } from './Footer';
 import './AppShell.scss';
 
 const Comp = () => {

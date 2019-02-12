@@ -6,7 +6,7 @@ import {
   DraggableProvided,
   DraggableStateSnapshot
 } from 'react-beautiful-dnd';
-import { Header, Button } from 'semantic-ui-react';
+import { Header, Button, Icon } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
 
 interface GroupsListItemObserverProps {
@@ -15,7 +15,7 @@ interface GroupsListItemObserverProps {
   accountId: string;
 }
 
-const AccountsListItemObserver: React.FunctionComponent<
+const AccountListItemObserver: React.FunctionComponent<
   GroupsListItemObserverProps
 > = observer(({ provided, snapshot, accountId }) => {
   const store = React.useContext(StoreContext).entity.settings.groups;
@@ -34,7 +34,7 @@ const AccountsListItemObserver: React.FunctionComponent<
         <Header>Account #{accountId}</Header>
       </div>
       <div className="DragDropList-item-button">
-        <Button icon="pencil" size="tiny" circular basic />
+        <Button icon="cog" size="small" circular basic />
       </div>
     </div>
   );
@@ -45,13 +45,13 @@ interface Props {
   index: number;
 }
 
-export const AccountsListItem: React.FunctionComponent<Props> = ({
+export const AccountListItem: React.FunctionComponent<Props> = ({
   accountId,
   index
 }) => (
   <Draggable draggableId={accountId} index={index}>
     {(provided, snapshot) => (
-      <AccountsListItemObserver
+      <AccountListItemObserver
         provided={provided}
         snapshot={snapshot}
         accountId={accountId}

@@ -3,9 +3,9 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { IPromiseBasedObservable } from 'mobx-utils';
 import { Loader, Message } from 'semantic-ui-react';
-import { AppShell } from 'features/app-shell';
-import { RootStore, StoreContext } from 'RootStore';
-import { ErrorBoundary } from 'ErrorBoundary';
+import { AppShell } from 'features/app-shell/components';
+import { RootStore, StoreContext } from './RootStore';
+import { ErrorBoundary } from './ErrorBoundary';
 
 interface Props {
   store: IPromiseBasedObservable<RootStore>;

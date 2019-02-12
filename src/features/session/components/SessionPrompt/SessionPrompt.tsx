@@ -2,8 +2,8 @@ import React from 'react';
 import { t } from 'ttag';
 import { RouteComponentProps } from '@reach/router';
 import { Divider, Grid, Header, Responsive, Segment } from 'semantic-ui-react';
-import { CloudAccount } from './components/CloudAccount';
-import { GuestAccount } from './components/GuestAccount';
+import { CloudAccount } from './CloudAccount';
+import { GuestAccount } from './GuestAccount';
 
 export class SessionPrompt extends React.Component<RouteComponentProps> {
   render() {

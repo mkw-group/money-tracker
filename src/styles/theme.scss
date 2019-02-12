@@ -42,7 +42,7 @@ body {
     }
   }
 
-  .ui.button:not(.circular) {
+  .ui.button:not(.circular):not(.icon) {
     font-weight: 500;
     font-family: $font-system;
     padding: 10px 1.5em 12px 1.5em;

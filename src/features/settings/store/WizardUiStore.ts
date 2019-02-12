@@ -1,11 +1,10 @@
 import { observable, action } from 'mobx';
 
-export type WizardStep = 'groups' | 'accounts' | 'categories' | 'currency';
+export type WizardStep = 'accounts' | 'categories' | 'currency';
 
 export class WizardUiStore {
-  @observable activeStep: WizardStep = 'groups';
+  @observable activeStep: WizardStep = 'accounts';
   @observable completedSteps: Record<WizardStep, boolean> = {
-    groups: false,
     accounts: false,
     categories: false,
     currency: false

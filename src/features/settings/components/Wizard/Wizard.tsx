@@ -5,15 +5,13 @@ import { RouteComponentProps } from '@reach/router';
 import { Header, Segment, Step, Icon } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
 import { WizardStep } from 'features/settings';
-import { AssetsSetup } from './components/AssetsSetup';
-import { GroupsSetup } from './components/GroupsSetup';
-import { AccountsSetup } from './components/AccountsSetup';
+import { AccountSetup } from './AccountSetup';
+import { AssetsSetup } from './AssetsSetup';
 import 'styles/dnd.scss';
 import './Wizard.scss';
 
 const StepView: Record<WizardStep, React.ReactNode> = {
-  groups: <GroupsSetup />,
-  accounts: <AccountsSetup />,
+  accounts: <AccountSetup />,
   categories: <div>categories</div>,
   currency: <AssetsSetup />
 };
@@ -62,7 +60,6 @@ export const Wizard: React.FunctionComponent<RouteComponentProps> = observer(
           </Header>
         </Segment>
         <Step.Group fluid attached>
-          <StepItem id="groups" title={t`Groups`} icon="folder open outline" />
           <StepItem
             id="accounts"
             title={t`Accounts`}

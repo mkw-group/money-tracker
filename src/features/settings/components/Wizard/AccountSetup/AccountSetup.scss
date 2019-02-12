@@ -1,8 +1,13 @@
 #moneytracker-root {
-  .GroupsSetup {
+  .AccountSetup {
     .ui.form input[type='text'] {
       font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       border: none;
+    }
+
+    &-buttonContainer {
+      display: flex;
+      justify-content: space-between;
     }
   }
 }

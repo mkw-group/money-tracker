@@ -1,4 +1,4 @@
-import { observable, observe, action, IObservableArray } from 'mobx';
+import { observable, action, IObservableArray } from 'mobx';
 import { SettingsStorage } from 'features/storage';
 import { reorder } from 'util/dnd';
 import { GroupId, GroupsStore } from './GroupsStore';
@@ -31,20 +31,22 @@ export class SettingsStore {
       {} as Record<GroupId, IObservableArray<AccountId>>
     );
 
-    groupsStore.on('add', ({ id }) => {
+    groupsStore.on('add', async ({ id }) => {
       this.groups.unshift(id);
       this.accounts[id] = observable([]);
-    });
-    groupsStore.on('remove', ({ id }) => {
-      this.groups.remove(id);
-      delete this.accounts[id];
-    });
-    accountStore.on('add', ({ id }, groupId) => {
-      this.accounts[groupId].unshift(id);
+      await this.saveToStorage();
     });
 
-    this.groups.observe(() => this.persist());
-    observe(this, () => this.persist());
+    groupsStore.on('remove', async ({ id }) => {
+      this.groups.remove(id);
+      delete this.accounts[id];
+      await this.saveToStorage();
+    });
+
+    accountStore.on('add', async ({ id }, groupId) => {
+      this.accounts[groupId].unshift(id);
+      await this.saveToStorage();
+    });
   }
 
   static async init(
@@ -58,8 +60,9 @@ export class SettingsStore {
     return new SettingsStore(settings, groups, accounts, storage);
   }
 
-  @action moveGroup(startIndex: number, endIndex: number) {
+  @action async moveGroup(startIndex: number, endIndex: number) {
     this.groups.replace(reorder(this.groups, startIndex, endIndex));
+    await this.saveToStorage();
   }
 
   @action async moveAccount(
@@ -77,13 +80,15 @@ export class SettingsStore {
       this.accounts[startGroupId].remove(accountId);
       this.accounts[endGroupId].splice(endIndex, 0, accountId);
     }
+    await this.saveToStorage();
   }
 
-  @action.bound completeSetup() {
+  @action.bound async completeSetup() {
     this.isSetupComplete = true;
+    await this.saveToStorage();
   }
 
-  private async persist() {
+  private async saveToStorage() {
     const { isSetupComplete, groups, accounts } = this;
     this.storage.save({ isSetupComplete, groups, accounts });
   }
