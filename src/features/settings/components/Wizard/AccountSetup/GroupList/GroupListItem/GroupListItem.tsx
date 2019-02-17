@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import { t } from 'ttag';
 import { observer } from 'mobx-react-lite';
 import {
   Draggable,
@@ -21,9 +22,9 @@ interface GroupListItemObserverProps {
 const GroupListItemObserver: React.FunctionComponent<
   GroupListItemObserverProps
 > = observer(({ provided, snapshot, groupId }) => {
-  const { groups, settings } = React.useContext(StoreContext).entity;
-  const group = groups.getById(groupId);
-  const isEdit = groups.form.id === group.id;
+  const { groups, accounts, settings } = React.useContext(StoreContext).entity;
+  const group = groups.findById(groupId);
+  const isEdit = groups.form && groups.form.id === group.id;
   return (
     <div
       className={classnames(
@@ -41,11 +42,12 @@ const GroupListItemObserver: React.FunctionComponent<
         >
           <Button
             icon={isEdit ? 'check' : 'pencil'}
+            aria-label={isEdit ? t`Save group` : t`Edit group ${group.name}`}
             onClick={() => {
               if (!isEdit) {
-                groups.form.openForm(group);
+                groups.openEditForm(group);
               } else {
-                groups.save(group);
+                groups.submitForm();
               }
             }}
             circular
@@ -53,23 +55,26 @@ const GroupListItemObserver: React.FunctionComponent<
           />
         </div>
         <div className="DragDropList-item-label">
-          {isEdit ? (
-            <EditForm store={groups} group={group} />
-          ) : (
-            <Header>{group.name}</Header>
-          )}
+          {isEdit ? <EditForm store={groups} /> : <Header>{group.name}</Header>}
         </div>
         <div
           className="DragDropList-item-button"
           style={{ marginRight: '0.5em' }}
         >
-          <Button icon="plus" basic circular />
+          <Button
+            icon="plus"
+            aria-label={t`Add account to group ${group.name}`}
+            onClick={() => accounts.openNewForm(groupId)}
+            basic
+            circular
+          />
         </div>
         <div className="DragDropList-item-button">
           <Button
             icon="trash alternate outline"
+            aria-label={t`Delete group ${group.name}`}
             disabled={
-              groups.length === 1 || settings.accounts[groupId].length > 0
+              groups.length === 1 || settings.groupAccounts[groupId].length > 0
             }
             onClick={() => groups.remove(group)}
             circular

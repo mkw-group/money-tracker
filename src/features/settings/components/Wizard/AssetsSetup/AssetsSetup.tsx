@@ -2,8 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Form } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
-import { AssetFinderDropdown } from './components/AssetFinderDropdown';
-import { AssetsList } from './components/AssetsList';
 
 export const AssetsSetup = observer(() => {
   // const { money } = React.useContext(StoreContext).entity.settings;

@@ -1,11 +1,10 @@
 import EventEmitter from 'events';
-import { SyntheticEvent } from 'react';
 import { t } from 'ttag';
-import { InputOnChangeData } from 'semantic-ui-react';
 import { observable, action, computed, IObservableArray } from 'mobx';
 import { GroupsStorage } from 'features/storage';
+import { createViewModel, IViewModel } from 'mobx-utils';
 
-// Account ids follow pattern `G${timestamp}`
+// Group id follows pattern `G${timestamp}`
 export type GroupId = string;
 export interface IAccountGroup {
   id: GroupId;
@@ -13,9 +12,9 @@ export interface IAccountGroup {
 }
 
 export class GroupsStore {
-  public form: Form = new Form();
+  @observable form?: IAccountGroup & IViewModel<IAccountGroup>;
   private groups: IObservableArray<IAccountGroup>;
-  private eventManager: EventEmitter = new EventEmitter();
+  private events: EventEmitter = new EventEmitter();
 
   constructor(groups: IAccountGroup[], private storage: GroupsStorage) {
     this.groups = observable(groups);
@@ -28,7 +27,61 @@ export class GroupsStore {
     return new GroupsStore(groups, storage);
   }
 
-  public getById(id: GroupId): IAccountGroup {
+  @action.bound async add() {
+    const group = observable({
+      id: `G${Date.now()}`,
+      name: t`New group`
+    });
+
+    this.groups.push(group);
+    this.events.emit('add', group);
+    this.openEditForm(group);
+
+    await this.storage.save(group);
+  }
+
+  @action openEditForm(group: IAccountGroup) {
+    if (this.form) this.form.reset();
+    this.form = createViewModel(group);
+  }
+
+  @action async submitForm() {
+    if (!this.form) return;
+
+    this.form.submit();
+    const data = this.form.model;
+    this.closeForm();
+
+    await this.storage.save(data);
+  }
+
+  @action closeForm() {
+    if (!this.form) return;
+
+    this.form.reset();
+    this.form = undefined;
+  }
+
+  @action async remove(group: IAccountGroup) {
+    this.groups.remove(group);
+    this.events.emit('remove', group);
+
+    await this.storage.remove(group);
+  }
+
+  @computed get length() {
+    return this.groups.length;
+  }
+
+  public onAdded(listener: (group: IAccountGroup) => void) {
+    this.events.addListener('add', listener);
+  }
+
+  public onRemoved(listener: (group: IAccountGroup) => void) {
+    this.events.addListener('remove', listener);
+  }
+
+  public findById(id: GroupId): IAccountGroup {
     const group = this.groups.find((g) => g.id === id);
     if (!group) {
       throw new Error(`Group with ID ${id} not found.`);
@@ -37,42 +90,7 @@ export class GroupsStore {
     return group;
   }
 
-  @action.bound async add() {
-    const group = {
-      id: `G${Date.now()}`,
-      name: t`New group`
-    };
-
-    this.groups.push(group);
-    this.eventManager.emit('add', group);
-    this.form.openForm(group);
-    await this.storage.save(group);
-  }
-
-  @action async remove(group: IAccountGroup) {
-    this.groups.remove(group);
-    this.eventManager.emit('remove', group);
-    await this.storage.remove(group);
-  }
-
-  @action async save(group: IAccountGroup) {
-    this.form.id = undefined;
-
-    if (this.form.name && this.form.name !== group.name) {
-      group.name = this.form.name;
-      await this.storage.save(group);
-    }
-  }
-
-  @computed get length() {
-    return this.groups.length;
-  }
-
-  public on(event: string, listener: (group: IAccountGroup) => void) {
-    this.eventManager.addListener(event, listener);
-  }
-
-  map<U>(
+  public map<U>(
     callback: (
       value: IAccountGroup,
       index: number,
@@ -81,27 +99,5 @@ export class GroupsStore {
     thisArg?: any
   ): U[] {
     return this.groups.map(callback, thisArg);
-  }
-}
-
-class Form {
-  @observable id?: GroupId;
-  @observable name?: string;
-
-  @action openForm(group: IAccountGroup) {
-    this.id = group.id;
-    this.name = group.name;
-  }
-
-  @action closeForm() {
-    this.id = undefined;
-    this.name = undefined;
-  }
-
-  @action.bound updateGroupName(
-    _: SyntheticEvent,
-    { value }: InputOnChangeData
-  ) {
-    this.name = value;
   }
 }

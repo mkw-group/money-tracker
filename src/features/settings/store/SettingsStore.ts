@@ -12,7 +12,7 @@ export interface ISettingsStore {
 
 export class SettingsStore {
   @observable isSetupComplete: boolean;
-  @observable accounts: Record<GroupId, IObservableArray<AccountId>>;
+  @observable groupAccounts: Record<GroupId, IObservableArray<AccountId>>;
   public groups: IObservableArray<GroupId>;
 
   constructor(
@@ -23,7 +23,7 @@ export class SettingsStore {
   ) {
     this.isSetupComplete = isSetupComplete;
     this.groups = observable(groups);
-    this.accounts = Object.entries(accounts).reduce(
+    this.groupAccounts = Object.entries(accounts).reduce(
       (acc, [groupId, groupAccounts]) => {
         acc[groupId] = observable(groupAccounts);
         return acc;
@@ -31,21 +31,33 @@ export class SettingsStore {
       {} as Record<GroupId, IObservableArray<AccountId>>
     );
 
-    groupsStore.on('add', async ({ id }) => {
+    groupsStore.onAdded(async ({ id }) => {
       this.groups.unshift(id);
-      this.accounts[id] = observable([]);
-      await this.saveToStorage();
+      this.groupAccounts[id] = observable([]);
+      await this.save();
     });
 
-    groupsStore.on('remove', async ({ id }) => {
+    groupsStore.onRemoved(async ({ id }) => {
       this.groups.remove(id);
-      delete this.accounts[id];
-      await this.saveToStorage();
+      delete this.groupAccounts[id];
+      await this.save();
     });
 
-    accountStore.on('add', async ({ id }, groupId) => {
-      this.accounts[groupId].unshift(id);
-      await this.saveToStorage();
+    accountStore.onAddedToGroup(async ({ id }, groupId) => {
+      this.groupAccounts[groupId].unshift(id);
+      await this.save();
+    });
+
+    accountStore.onRemoved(async ({ id }) => {
+      for (const groupId in this.groupAccounts) {
+        for (const accountId of this.groupAccounts[groupId]) {
+          if (accountId === id) {
+            this.groupAccounts[groupId].remove(accountId);
+            await this.save();
+            return;
+          }
+        }
+      }
     });
   }
 
@@ -62,7 +74,7 @@ export class SettingsStore {
 
   @action async moveGroup(startIndex: number, endIndex: number) {
     this.groups.replace(reorder(this.groups, startIndex, endIndex));
-    await this.saveToStorage();
+    await this.save();
   }
 
   @action async moveAccount(
@@ -73,23 +85,23 @@ export class SettingsStore {
     endIndex: number
   ) {
     if (startGroupId === endGroupId) {
-      this.accounts[startGroupId].replace(
-        reorder(this.accounts[startGroupId], startIndex, endIndex)
+      this.groupAccounts[startGroupId].replace(
+        reorder(this.groupAccounts[startGroupId], startIndex, endIndex)
       );
     } else {
-      this.accounts[startGroupId].remove(accountId);
-      this.accounts[endGroupId].splice(endIndex, 0, accountId);
+      this.groupAccounts[startGroupId].remove(accountId);
+      this.groupAccounts[endGroupId].splice(endIndex, 0, accountId);
     }
-    await this.saveToStorage();
+    await this.save();
   }
 
   @action.bound async completeSetup() {
     this.isSetupComplete = true;
-    await this.saveToStorage();
+    await this.save();
   }
 
-  private async saveToStorage() {
-    const { isSetupComplete, groups, accounts } = this;
+  private async save() {
+    const { isSetupComplete, groups, groupAccounts: accounts } = this;
     this.storage.save({ isSetupComplete, groups, accounts });
   }
 }

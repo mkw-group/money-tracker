@@ -25,7 +25,7 @@ export class AccountsStorage {
   public async save({ id, name, assets, balance }: IAccount) {
     try {
       const doc = await localDB.get<IAccountStorage>(id);
-      await localDB.put({ ...doc, name });
+      await localDB.put({ ...doc, name, assets, balance });
     } catch (error) {
       if (error.status !== 404) {
         throw error;

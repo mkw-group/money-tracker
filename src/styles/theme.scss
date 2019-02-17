@@ -15,7 +15,7 @@ body {
   }
 }
 
-#moneytracker-root {
+.moneytracker {
   .ui.primary.button {
     background-color: #3f51b5;
 
@@ -42,10 +42,9 @@ body {
     }
   }
 
-  .ui.button:not(.circular):not(.icon) {
+  .ui.button {
     font-weight: 500;
-    font-family: $font-system;
-    padding: 10px 1.5em 12px 1.5em;
+    font-family: $font-narrow;
   }
 
   .ui.label,
@@ -91,5 +90,17 @@ body {
   .ui.message {
     max-width: $screen-lg-min;
     margin: 0 auto;
+  }
+
+  .ui.form {
+    margin-bottom: 0;
+
+    .field > label {
+      font-weight: 500;
+    }
+  }
+
+  .ui.header > .icon + .content {
+    vertical-align: bottom;
   }
 }

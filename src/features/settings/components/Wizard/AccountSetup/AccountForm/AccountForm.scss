@@ -1,0 +1,17 @@
+.AccountForm {
+  .DragDropList {
+    margin-bottom: 1.25em;
+  }
+
+  &-buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 -1.5em -1em !important;
+    padding: 1em 1em 0.5em 0.5em;
+    border-top: solid 1px rgba(34, 36, 38, 0.15);
+
+    .button {
+      margin-left: 0.5em !important;
+    }
+  }
+}

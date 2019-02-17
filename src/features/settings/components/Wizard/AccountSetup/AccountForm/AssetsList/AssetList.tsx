@@ -1,6 +1,7 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
 import classnames from 'classnames';
+import { t } from 'ttag';
+import { observer } from 'mobx-react-lite';
 import {
   DragDropContext,
   Droppable,
@@ -8,21 +9,18 @@ import {
   DroppableStateSnapshot,
   OnDragEndResponder
 } from 'react-beautiful-dnd';
-import { MoneyStore } from 'features/settings';
-import { AssetsListItem } from './AssetsListItem';
-import './AssetsList.scss';
-import { StoreContext } from 'RootStore';
+import { Account } from 'features/settings';
+import { AssetListItem } from './AssetListItem';
 
 interface DroppableAssetsListProps {
+  account: Account;
   provided: DroppableProvided;
   snapshot: DroppableStateSnapshot;
 }
 
-const DroppableAssetsList: React.FunctionComponent<
+const AssetListObserver: React.FunctionComponent<
   DroppableAssetsListProps
-> = observer(({ provided, snapshot }) => {
-  const store = React.useContext(StoreContext).entity.money;
-
+> = observer(({ account, provided, snapshot }) => {
   return (
     <div
       className={classnames('DragDropList', {
@@ -31,19 +29,27 @@ const DroppableAssetsList: React.FunctionComponent<
       ref={provided.innerRef}
       {...provided.droppableProps}
     >
-      {store.assets.map((asset, index) => (
-        <AssetsListItem asset={asset} index={index} key={index} />
+      {account.assets.map((assetId, index) => (
+        <AssetListItem
+          account={account}
+          assetId={assetId}
+          index={index}
+          key={index}
+        />
       ))}
+      {account.assets.length === 0 && (
+        <div className="DragDropList-noItems">{t`Please, select at least one asset for this account.`}</div>
+      )}
       {provided.placeholder}
     </div>
   );
 });
 
 interface Props {
-  store: MoneyStore;
+  account: Account;
 }
 
-export class AssetsList extends React.Component<Props> {
+export class AssetList extends React.Component<Props> {
   onDragStart = () => {
     if (window.navigator.vibrate) {
       window.navigator.vibrate(100);
@@ -52,7 +58,7 @@ export class AssetsList extends React.Component<Props> {
 
   onDragEnd: OnDragEndResponder = ({ destination, source }) => {
     if (destination && destination.index !== source.index) {
-      this.props.store.swapAssets(source.index, destination.index);
+      this.props.account.moveAsset(source.index, destination.index);
     }
   };
 
@@ -64,7 +70,11 @@ export class AssetsList extends React.Component<Props> {
       >
         <Droppable droppableId="assets">
           {(provided, snapshot) => (
-            <DroppableAssetsList provided={provided} snapshot={snapshot} />
+            <AssetListObserver
+              account={this.props.account}
+              provided={provided}
+              snapshot={snapshot}
+            />
           )}
         </Droppable>
       </DragDropContext>

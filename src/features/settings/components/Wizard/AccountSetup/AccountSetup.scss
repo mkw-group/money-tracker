@@ -1,7 +1,9 @@
+@import 'styles/variables.scss';
+
 #moneytracker-root {
   .AccountSetup {
     .ui.form input[type='text'] {
-      font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: $font-narrow;
       border: none;
     }
 

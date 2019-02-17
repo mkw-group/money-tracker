@@ -1,8 +1,7 @@
 import { SyntheticEvent } from 'react';
 import { CheckboxProps } from 'semantic-ui-react';
-import { observable, observe, action, computed } from 'mobx';
-import { reorder } from 'util/dnd';
-import { SettingsStorage } from 'features/storage';
+import { observable, action, computed, IObservableArray } from 'mobx';
+import { MoneyStorage } from 'features/storage';
 
 export type AssetKind = 'currency' | 'crypto' | 'security';
 export type AssetId = string;
@@ -28,25 +27,35 @@ export interface IMoneyStore {
 export class MoneyStore {
   @observable exchangeRate: Record<AssetId, number>;
   @observable baseCurrency: AssetId;
-  @observable assets: IAsset[];
+  assets: IObservableArray<IAsset>;
 
-  constructor({ exchangeRate, baseCurrency, assets }: IMoneyStore) {
+  constructor(
+    { exchangeRate, baseCurrency, assets }: IMoneyStore,
+    private storage: MoneyStorage
+  ) {
     this.exchangeRate = exchangeRate;
     this.baseCurrency = baseCurrency;
-    this.assets = assets;
-
-    observe(this, async ({ object }) => {
-      const { exchangeRate, baseCurrency, assets } = object;
-      // await SettingsStorage.persistMoney({
-      //   exchangeRate,
-      //   baseCurrency,
-      //   assets
-      // });
+    this.assets = observable(assets);
+    this.assets.observe(() => {
+      const { exchangeRate, baseCurrency, assets } = this;
+      this.storage.save({ exchangeRate, baseCurrency, assets });
     });
   }
 
   public static async init(): Promise<MoneyStore> {
-    return {} as MoneyStore;
+    const storage = new MoneyStorage();
+    const money = await storage.load();
+
+    return new MoneyStore(money, storage);
+  }
+
+  public findAssetById(id: AssetId): IAsset {
+    const asset = this.assets.find((item) => item.id === id);
+    if (!asset) {
+      throw new Error(`Asset ${id} not found!`);
+    }
+
+    return asset;
   }
 
   @computed get assetsIdSet(): Set<AssetId> {
@@ -60,18 +69,13 @@ export class MoneyStore {
     this.baseCurrency = String(value);
   }
 
-  @action.bound addAsset(asset: IAsset) {
+  @action addAsset(asset: IAsset) {
     if (!this.assetsIdSet.has(asset.id)) {
       this.assets.push(asset);
     }
   }
 
   @action removeAsset(asset: IAsset) {
-    // @ts-ignore
     this.assets.remove(asset);
-  }
-
-  @action swapAssets(startIndex: number, endIndex: number) {
-    this.assets = reorder(this.assets, startIndex, endIndex);
   }
 }

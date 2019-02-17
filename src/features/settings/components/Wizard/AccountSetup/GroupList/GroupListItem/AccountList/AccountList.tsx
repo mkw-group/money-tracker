@@ -31,11 +31,11 @@ const AccountListObserver: React.FunctionComponent<
       ref={provided.innerRef}
       {...provided.droppableProps}
     >
-      {store.entity.settings.accounts[groupId].map((accountId, index) => (
+      {store.entity.settings.groupAccounts[groupId].map((accountId, index) => (
         <AccountListItem accountId={accountId} index={index} key={accountId} />
       ))}
-      {store.entity.settings.accounts[groupId].length === 0 && (
-        <div className="DragDropList-noItems">{t`There are no accounts in this group yet`}</div>
+      {store.entity.settings.groupAccounts[groupId].length === 0 && (
+        <div className="DragDropList-noItems">{t`There are no accounts in this group yet.`}</div>
       )}
       {provided.placeholder}
     </div>

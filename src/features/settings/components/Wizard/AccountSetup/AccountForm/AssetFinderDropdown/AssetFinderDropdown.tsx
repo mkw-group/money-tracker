@@ -6,6 +6,7 @@ import { findAssets } from 'webtasks/AssetSearch.client';
 import './AssetFinderDropdown.scss';
 
 interface Props {
+  id: string;
   selected: Set<AssetId>;
   onSelect: (asset: IAsset) => void;
 }
@@ -36,7 +37,11 @@ export class AssetFinderDropdown extends React.Component<Props, State> {
   };
 
   handleSelect = (event: SyntheticEvent, { value }: DropdownProps) => {
-    if (event.target === event.currentTarget) {
+    if (
+      event.target === event.currentTarget ||
+      // @ts-ignore
+      event.currentTarget === document
+    ) {
       this.props.onSelect(this.state.assets[String(value)]);
     }
   };
@@ -69,6 +74,7 @@ export class AssetFinderDropdown extends React.Component<Props, State> {
   render() {
     return (
       <Dropdown
+        searchInput={{ id: this.props.id }}
         className="AssetFinderDropdown"
         placeholder="EUR, Bitcoin or MSFT"
         selectOnNavigation={false}

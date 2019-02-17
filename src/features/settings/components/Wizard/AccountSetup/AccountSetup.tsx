@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { Button } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
 import { GroupList } from './GroupList';
+import { AccountForm } from './AccountForm';
 import './AccountSetup.scss';
 
 export const AccountSetup = observer(() => {
@@ -21,11 +22,14 @@ export const AccountSetup = observer(() => {
         </Button>
         <Button
           onClick={() => store.ui.wizard.completeStep('accounts', 'categories')}
+          disabled={store.entity.accounts.length === 0}
           primary
         >
           {t`Continue`}
         </Button>
       </div>
+
+      <AccountForm />
     </div>
   );
 });

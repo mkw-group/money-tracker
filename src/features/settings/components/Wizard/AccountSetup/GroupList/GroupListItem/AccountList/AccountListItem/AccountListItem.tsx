@@ -1,12 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
+import { t } from 'ttag';
 import { observer } from 'mobx-react-lite';
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot
 } from 'react-beautiful-dnd';
-import { Header, Button, Icon } from 'semantic-ui-react';
+import { Header, Button, Checkbox } from 'semantic-ui-react';
 import { StoreContext } from 'RootStore';
 
 interface GroupsListItemObserverProps {
@@ -18,7 +19,9 @@ interface GroupsListItemObserverProps {
 const AccountListItemObserver: React.FunctionComponent<
   GroupsListItemObserverProps
 > = observer(({ provided, snapshot, accountId }) => {
-  const store = React.useContext(StoreContext).entity.settings.groups;
+  const { accounts } = React.useContext(StoreContext).entity;
+
+  const account = accounts.findById(accountId);
 
   return (
     <div
@@ -30,11 +33,21 @@ const AccountListItemObserver: React.FunctionComponent<
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
+      <div className="DragDropList-item-button left">
+        <Checkbox />
+      </div>
       <div className="DragDropList-item-label">
-        <Header>Account #{accountId}</Header>
+        <Header>{account.name}</Header>
       </div>
       <div className="DragDropList-item-button">
-        <Button icon="cog" size="small" circular basic />
+        <Button
+          icon="cog"
+          size="small"
+          aria-label={t`Edit account ${account.name}`}
+          onClick={() => accounts.openEditForm(account)}
+          circular
+          basic
+        />
       </div>
     </div>
   );

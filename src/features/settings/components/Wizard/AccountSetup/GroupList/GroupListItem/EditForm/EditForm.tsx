@@ -1,20 +1,19 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Form, Input } from 'semantic-ui-react';
-import { GroupsStore, IAccountGroup } from 'features/settings';
+import { GroupsStore } from 'features/settings';
 
 interface GroupEditFormPros {
   store: GroupsStore;
-  group: IAccountGroup;
 }
 
 export const EditForm: React.FunctionComponent<GroupEditFormPros> = observer(
-  ({ store, group }) => {
+  ({ store }) => {
     // @ts-ignore
     const inputRef = React.useRef();
     const keydownListener = ({ key }: KeyboardEvent) => {
       if (key === 'Escape') {
-        store.form.closeForm();
+        store.closeForm();
       }
     };
 
@@ -27,14 +26,20 @@ export const EditForm: React.FunctionComponent<GroupEditFormPros> = observer(
       }
     });
 
+    const form = store.form;
+    if (!form) return null;
+
     return (
-      <Form onSubmit={() => store.save(group)}>
+      <Form onSubmit={() => store.submitForm()}>
         <Input
           size="big"
-          value={store.form.name}
-          onChange={store.form.updateGroupName}
+          value={form.name}
+          onChange={(_, { value }) => {
+            form.name = value;
+          }}
           ref={inputRef}
           transparent
+          required
           fluid
         />
       </Form>
